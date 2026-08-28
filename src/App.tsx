@@ -1,49 +1,101 @@
+import { useEffect, useState } from "react";
+
 import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
-import assessmentLookup from "./data/assessmentLookup.json";
+import { getAssessment } from "./services/assessmentService";
+
 import onTxOhs from "./data/OnTxOHS.json";
 import onTxSymptom from "./data/ONTX_SYMPTOM.json";
-
 import offTxOhs from "./data/OffTxOHS.json";
 import offTxFactB from "./data/OFFTX_FACTB.json";
 
 import hdftLogo from "./assets/trustlogo.png";
 
-function App() {
-  const urlParams = new URLSearchParams(
-    window.location.search
-  );
-
-  const token =
-    urlParams.get("token") ?? "abc123";
-
-  /*
-    Mock lookup.
-    Later this will come from Azure Function.
-  */
-
-  const assessment =
-  assessmentLookup.find(
-    (a) =>
-      a.assessmentToken === token
-  );
-if (!assessment) {
-  return (
-    <div
-      style={{
-        padding: "40px",
-        textAlign: "center",
-      }}
-    >
-      <h1>
-        Invalid Assessment Link
-      </h1>
-
-      <p>
-        The assessment could not be found.
-      </p>
-    </div>
-  );
+interface Assessment {
+  token: string;
+  assessmentId: "ONTX" | "OFFTX";
+  questionnaires: string[];
 }
+
+function App() {
+  const [assessment, setAssessment] =
+    useState<Assessment | null>(null);
+
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const token = new URLSearchParams(
+    window.location.search
+  ).get("token");
+
+  useEffect(() => {
+    async function loadAssessment() {
+      if (!token) {
+        setLoadError("No assessment token was supplied.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setLoadError(null);
+
+        const result = await getAssessment(token);
+
+        if (result.error || !result.assessmentId) {
+          setAssessment(null);
+          setLoadError(
+            result.error ?? "The assessment could not be found."
+          );
+          return;
+        }
+
+        setAssessment(result as Assessment);
+        console.log(result);
+      } catch (error) {
+        console.error("Assessment lookup failed:", error);
+
+        setAssessment(null);
+        setLoadError(
+          "The assessment could not be loaded. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    void loadAssessment();
+  }, [token]);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+        }}
+      >
+        Loading assessment...
+      </div>
+    );
+  }
+
+  if (!assessment || loadError) {
+    return (
+      <div
+        style={{
+          padding: "40px",
+          textAlign: "center",
+        }}
+      >
+        <h1>Invalid Assessment Link</h1>
+
+        <p>
+          {loadError ?? "The assessment could not be found."}
+        </p>
+      </div>
+    );
+  }
+
   const questionnaireMap = {
   ONTX_OHS: onTxOhs,
   ONTX_SYMPTOM: onTxSymptom,
@@ -53,7 +105,7 @@ if (!assessment) {
 
 const questionnaires =
   assessment.questionnaires.map(
-    (questionnaireCode) =>
+    (questionnaireCode: string) =>
       questionnaireMap[
         questionnaireCode as keyof typeof questionnaireMap
       ]
@@ -75,35 +127,28 @@ const questionnaires =
         }}
       >
         <img
-          src={hdftLogo}
-          alt="HDFT"
-          style={{
-            maxWidth: "100%",
-            height: "auto",
-          }}
-        />
+
+src={hdftLogo}
+
+alt="HDFT"
+
+style={{
+  maxWidth: "100%",
+  height: "auto",
+}} />
+
         <p style={{ margin: "12px 0 0 0" }}>
           Assessment Reference: {token}
         </p>
       </div>
 
-      <div
-        style={{
-          padding: "40px",
-        }}
-      >
-        {questionnaires.map(
-          (questionnaire) => (
-            <QuestionnaireRenderer
-              key={
-                questionnaire.questionnaireCode
-              }
-              questionnaire={
-                questionnaire
-              }
-            />
-          )
-        )}
+      <div style={{ padding: "40px" }}>
+        {questionnaires.map((questionnaire) => (
+          <QuestionnaireRenderer
+            key={questionnaire.questionnaireCode}
+            questionnaire={questionnaire}
+          />
+        ))}
       </div>
     </div>
   );

@@ -246,7 +246,7 @@ export default function QuestionnaireRenderer({
         />
 
         <h1 style={{ margin: 0, fontSize: "28px" }}>
-          {questionnaire.questionnaireCode}
+          {questionnaire.questionnaireTitle}
         </h1>
 
         <div
