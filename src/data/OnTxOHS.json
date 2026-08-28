@@ -1,0 +1,17 @@
+{
+  "questionnaireCode": "ONTX_OHS",
+  "questions": [
+    {
+      "questionCode": "ONTX_OHS_Q1",
+      "questionNumber": "Q1",
+      "questionText": "Please indicate on the scale from 0 to 100 how your health is today. 0 is the worst health you can imagine and 100 is the best health you can imagine.",
+      "section": "Overall Health Scale",
+      "scaleCode": "VAS_0_100",
+      "responseType": "integer",
+      "mandatory": true,
+      "displayOrder": 1,
+      "options": [],
+      "branchRules": []
+    }
+  ]
+}

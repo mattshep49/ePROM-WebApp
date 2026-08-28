@@ -1,0 +1,1226 @@
+{
+  "questionnaireCode": "OFFTX_FACTB",
+  "questions": [
+    {
+      "questionCode": "FACTB_Q1",
+      "questionNumber": "Q1",
+      "questionText": "I have a lack of energy",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 1,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q2",
+      "questionNumber": "Q2",
+      "questionText": "I have nausea",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 2,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q3",
+      "questionNumber": "Q3",
+      "questionText": "Because of my physical condition, I have trouble meeting the needs of my family",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 3,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q4",
+      "questionNumber": "Q4",
+      "questionText": "I have pain",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 4,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q5",
+      "questionNumber": "Q5",
+      "questionText": "I am bothered by side effects of treatment",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 5,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q6",
+      "questionNumber": "Q6",
+      "questionText": "I feel ill",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 6,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q7",
+      "questionNumber": "Q7",
+      "questionText": "I am forced to spend time in bed",
+      "section": "Physical Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 7,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q8",
+      "questionNumber": "Q8",
+      "questionText": "I feel close to my friends",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 8,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q9",
+      "questionNumber": "Q9",
+      "questionText": "I get emotional support from my family",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 9,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q10",
+      "questionNumber": "Q10",
+      "questionText": "I get support from my friends",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 10,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q11",
+      "questionNumber": "Q11",
+      "questionText": "My family has accepted my illness",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 11,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q12",
+      "questionNumber": "Q12",
+      "questionText": "I am satisfied with family communication about my illness",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 12,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q13",
+      "questionNumber": "Q13",
+      "questionText": "I feel close to my partner or the person who is my main support",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 13,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q14",
+      "questionNumber": "Q14",
+      "questionText": "I am satisfied with my sex life",
+      "section": "Social/Family Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 14,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q15",
+      "questionNumber": "Q15",
+      "questionText": "I feel sad",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 15,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q16",
+      "questionNumber": "Q16",
+      "questionText": "I am satisfied with how I am coping with my illness",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 16,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q17",
+      "questionNumber": "Q17",
+      "questionText": "I am losing hope in the fight against my illness",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 17,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q18",
+      "questionNumber": "Q18",
+      "questionText": "I feel nervous",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 18,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q19",
+      "questionNumber": "Q19",
+      "questionText": "I worry about dying",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 19,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q20",
+      "questionNumber": "Q20",
+      "questionText": "I worry that my condition will get worse",
+      "section": "Emotional Wellbeing",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 20,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q21",
+      "questionNumber": "Q21",
+      "questionText": "I am able to work, include work at home",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 21,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q22",
+      "questionNumber": "Q22",
+      "questionText": "My work, include work at home, is fulfilling",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 22,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q23",
+      "questionNumber": "Q23",
+      "questionText": "I am able to enjoy life",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 23,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q24",
+      "questionNumber": "Q24",
+      "questionText": "I have accepted my illness",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 24,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q25",
+      "questionNumber": "Q25",
+      "questionText": "I am sleeping well",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 25,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q26",
+      "questionNumber": "Q26",
+      "questionText": "I am enjoying the things I usually do for fun",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 26,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q27",
+      "questionNumber": "Q27",
+      "questionText": "I am content with my quality of life right now",
+      "section": "Functional Well-being",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 27,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q28",
+      "questionNumber": "Q28",
+      "questionText": "I have been short of breath",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 28,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q29",
+      "questionNumber": "Q29",
+      "questionText": "I am self-conscious about the way I dress",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 29,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q30",
+      "questionNumber": "Q30",
+      "questionText": "One or both of my arms is swollen or tender",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 30,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q31",
+      "questionNumber": "Q31",
+      "questionText": "I feel sexually attractive",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 31,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q32",
+      "questionNumber": "Q32",
+      "questionText": "I am bothered by hair loss",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 32,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q33",
+      "questionNumber": "Q33",
+      "questionText": "I worry that other members of my family might someday get the same illness I have",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 33,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q34",
+      "questionNumber": "Q34",
+      "questionText": "I worry about the effect of my stress on my illness",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 34,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q35",
+      "questionNumber": "Q35",
+      "questionText": "I am bothered by a change in weight",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 35,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q36",
+      "questionNumber": "Q36",
+      "questionText": "I am able to feel like a woman",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 36,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "FACTB_Q37",
+      "questionNumber": "Q37",
+      "questionText": "I have certain parts of my body where I experience pain",
+      "section": "Additional Concerns",
+      "scaleCode": "FACTB_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 37,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    }
+  ]
+}

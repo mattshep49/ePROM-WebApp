@@ -1,0 +1,1273 @@
+{
+  "questionnaireCode": "ONTX_SYMPTOM",
+  "questions": [
+    {
+      "questionCode": "ONTX_Q1",
+      "questionNumber": "Q1",
+      "questionText": "How much did fatigue, tiredness or lack of energy interfere with your day-to-day activities?",
+      "section": "Symptom Assessment",
+      "scaleCode": "INTERFERENCE_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 1,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q2",
+      "questionNumber": "Q2",
+      "questionText": "How much did dizziness interfere with your day-to-day activities?",
+      "section": "Symptom Assessment",
+      "scaleCode": "INTERFERENCE_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 2,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q3",
+      "questionNumber": "Q3",
+      "questionText": "How often did you have pain or aching?",
+      "section": "Symptom Assessment",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 3,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "not equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q3A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q3A",
+      "questionNumber": "Q3a",
+      "questionText": "How severe was your pain or aching at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "PAIN_SEVERITY_4",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 4,
+      "options": [
+        {
+          "value": 3,
+          "text": "Very severe"
+        },
+        {
+          "value": 2,
+          "text": "Severe"
+        },
+        {
+          "value": 1,
+          "text": "Moderate"
+        },
+        {
+          "value": 0,
+          "text": "Mild"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q4",
+      "questionNumber": "Q4",
+      "questionText": "How severe was your cough at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 5,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q5",
+      "questionNumber": "Q5",
+      "questionText": "How severe was your wheezing at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 6,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q6",
+      "questionNumber": "Q6",
+      "questionText": "How severe was your shortness of breath at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 7,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q7",
+      "questionNumber": "Q7",
+      "questionText": "How severe was your sore mouth at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 8,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q8",
+      "questionNumber": "Q8",
+      "questionText": "How often did you have nausea?",
+      "section": "Symptom Assessment",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 9,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "not equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q8A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q8A",
+      "questionNumber": "Q8a",
+      "questionText": "How severe was your nausea at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "PAIN_SEVERITY_4",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 10,
+      "options": [
+        {
+          "value": 3,
+          "text": "Very severe"
+        },
+        {
+          "value": 2,
+          "text": "Severe"
+        },
+        {
+          "value": 1,
+          "text": "Moderate"
+        },
+        {
+          "value": 0,
+          "text": "Mild"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q9",
+      "questionNumber": "Q9",
+      "questionText": "How often did you have vomiting?",
+      "section": "Symptom Assessment",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 11,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "not equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q9A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q9A",
+      "questionNumber": "Q9a",
+      "questionText": "How severe was your vomiting at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "PAIN_SEVERITY_4",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 12,
+      "options": [
+        {
+          "value": 3,
+          "text": "Very severe"
+        },
+        {
+          "value": 2,
+          "text": "Severe"
+        },
+        {
+          "value": 1,
+          "text": "Moderate"
+        },
+        {
+          "value": 0,
+          "text": "Mild"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q10",
+      "questionNumber": "Q10",
+      "questionText": "How severe was your diarrhoea, loose or watery stools, at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 13,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q11",
+      "questionNumber": "Q11",
+      "questionText": "How severe was your constipation at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 14,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q12",
+      "questionNumber": "Q12",
+      "questionText": "How severe was the ringing in your ears at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 15,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q13",
+      "questionNumber": "Q13",
+      "questionText": "Have you had a rash?",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 16,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q13A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q13A",
+      "questionNumber": "Q13a",
+      "questionText": "Have you had a rash of the hands or feet causing cracking, peeling, redness or pain?",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 17,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q14",
+      "questionNumber": "Q14",
+      "questionText": "How severe was your itchy skin at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 18,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q15",
+      "questionNumber": "Q15",
+      "questionText": "How severe was your dry skin at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 19,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q16",
+      "questionNumber": "Q16",
+      "questionText": "Have you had a high temperature or fever? Temperature over 37.5C or 99.5F.",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 20,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q17",
+      "questionNumber": "Q17",
+      "questionText": "Have you had new or worsening palpitations?",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 21,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q18",
+      "questionNumber": "Q18",
+      "questionText": "How severe was the numbness or tingling in your hands or feet at its worst?",
+      "section": "Symptom Assessment",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 22,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "not equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q18A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q18A",
+      "questionNumber": "Q18a",
+      "questionText": "How much did numbness or tingling in your hands or feet interfere with your day-to-day activities?",
+      "section": "Symptom Assessment",
+      "scaleCode": "INTERFERENCE_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 23,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q19",
+      "questionNumber": "Q19",
+      "questionText": "Have you had new or worsening arm or leg swelling?",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 24,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q20",
+      "questionNumber": "Q20",
+      "questionText": "How often do you feel anxious about the future?",
+      "section": "Symptom Assessment",
+      "scaleCode": "INTERFERENCE_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 25,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q21",
+      "questionNumber": "Q21",
+      "questionText": "Please select the option that best describes you at the time of this assessment.",
+      "section": "Symptom Assessment",
+      "scaleCode": "PERFORMANCE_STATUS_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 26,
+      "options": [
+        {
+          "value": 4,
+          "text": "I need help with all my washing and dressing. I am not able to leave my bed or chair."
+        },
+        {
+          "value": 3,
+          "text": "I need some help with washing or dressing. I need to sit or lie down for at least half the day."
+        },
+        {
+          "value": 2,
+          "text": "I am able to wash and dress myself however I am not able to carry out light work."
+        },
+        {
+          "value": 1,
+          "text": "I am mobile and able to carry out light work at home or in the workplace."
+        },
+        {
+          "value": 0,
+          "text": "I am fully active and able to carry on all activities without restriction."
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22",
+      "questionNumber": "Q22",
+      "questionText": "Are you currently receiving endocrine or hormone therapy, either as a single agent or in combination with another treatment type?",
+      "section": "Symptom Assessment",
+      "scaleCode": "YES_NO",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 27,
+      "options": [
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": [
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22E",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22D",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22C",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22B",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22K",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22J",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22G",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22F",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22I",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22H",
+          "action": "show"
+        },
+        {
+          "operator": "equals",
+          "triggerValue": 0,
+          "targetQuestion": "ONTX_Q22A",
+          "action": "show"
+        }
+      ]
+    },
+    {
+      "questionCode": "ONTX_Q22A",
+      "questionNumber": "Q22a",
+      "questionText": "How often have you experienced shivering or shaking due to chills?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 28,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22B",
+      "questionNumber": "Q22b",
+      "questionText": "Did you have any hair loss?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "INTERFERENCE_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 29,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very much"
+        },
+        {
+          "value": 3,
+          "text": "Quite a bit"
+        },
+        {
+          "value": 2,
+          "text": "Somewhat"
+        },
+        {
+          "value": 1,
+          "text": "A little bit"
+        },
+        {
+          "value": 0,
+          "text": "Not at all"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22C",
+      "questionNumber": "Q22c",
+      "questionText": "How severe was your headache at its worst?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 30,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22D",
+      "questionNumber": "Q22d",
+      "questionText": "How severe were your hot flushes at their worst?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 31,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22E",
+      "questionNumber": "Q22e",
+      "questionText": "Have your periods been irregular?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "YES_NO_NA",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 32,
+      "options": [
+        {
+          "value": 2,
+          "text": "Not applicable"
+        },
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22F",
+      "questionNumber": "Q22f",
+      "questionText": "Have you noticed a change in your vaginal discharge?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "YES_NO_NA",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 33,
+      "options": [
+        {
+          "value": 2,
+          "text": "Not applicable"
+        },
+        {
+          "value": 1,
+          "text": "No"
+        },
+        {
+          "value": 0,
+          "text": "Yes"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22G",
+      "questionNumber": "Q22g",
+      "questionText": "How severe has your vaginal dryness been at its worst?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 34,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22H",
+      "questionNumber": "Q22h",
+      "questionText": "How severe has your insomnia, including difficulty falling asleep, staying asleep or waking early, been?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "SEVERITY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 35,
+      "options": [
+        {
+          "value": 4,
+          "text": "Very severe"
+        },
+        {
+          "value": 3,
+          "text": "Severe"
+        },
+        {
+          "value": 2,
+          "text": "Moderate"
+        },
+        {
+          "value": 1,
+          "text": "Mild"
+        },
+        {
+          "value": 0,
+          "text": "None"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22I",
+      "questionNumber": "Q22i",
+      "questionText": "How often have you experienced mood swings?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 36,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22J",
+      "questionNumber": "Q22j",
+      "questionText": "How often have you found it difficult to concentrate or felt forgetful, brain fog?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 37,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q22K",
+      "questionNumber": "Q22k",
+      "questionText": "How often do you skip a dose of medication, either intentionally or accidentally?",
+      "section": "Endocrine/Hormone Therapy Additional",
+      "scaleCode": "FREQUENCY_5",
+      "responseType": "choice",
+      "mandatory": true,
+      "displayOrder": 38,
+      "options": [
+        {
+          "value": 4,
+          "text": "Almost constantly"
+        },
+        {
+          "value": 3,
+          "text": "Frequently"
+        },
+        {
+          "value": 2,
+          "text": "Occasionally"
+        },
+        {
+          "value": 1,
+          "text": "Rarely"
+        },
+        {
+          "value": 0,
+          "text": "Never"
+        }
+      ],
+      "branchRules": []
+    },
+    {
+      "questionCode": "ONTX_Q23",
+      "questionNumber": "Q23",
+      "questionText": "Please let us know if there is anything else you would like to mention. This may not be regularly monitored and concerns should be directed to the local 24-hour cancer treatment helpline.",
+      "section": "Symptom Assessment",
+      "scaleCode": "FREE_TEXT",
+      "responseType": "text",
+      "mandatory": true,
+      "displayOrder": 39,
+      "options": [],
+      "branchRules": []
+    }
+  ]
+}

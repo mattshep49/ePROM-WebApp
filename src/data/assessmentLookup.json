@@ -1,0 +1,18 @@
+[
+  {
+    "assessmentToken": "ON123",
+    "assessmentCode": "ON_TREATMENT",
+    "questionnaires": [
+      "ONTX_OHS",
+      "ONTX_SYMPTOM"
+    ]
+  },
+  {
+    "assessmentToken": "OFF123",
+    "assessmentCode": "OFF_TREATMENT",
+    "questionnaires": [
+      "OFFTX_OHS",
+      "OFFTX_FACTB"
+    ]
+  }
+]
