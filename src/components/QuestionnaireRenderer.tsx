@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { submitAssessment } from "../services/submissionService";
 import trustLogo from "../assets/trustlogo.png";
 import type {
   Questionnaire,
@@ -167,7 +168,7 @@ export default function QuestionnaireRenderer({
     return missing;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const missingQuestions = validateAssessment();
 
     if (missingQuestions.length > 0) {
@@ -200,8 +201,18 @@ export default function QuestionnaireRenderer({
       ),
     };
 
-    console.log(payload);
-    alert("Assessment submitted successfully.");
+    try {
+
+  const result = await submitAssessment(payload);
+
+  console.log(result);
+
+  alert("Assessment submitted successfully.");
+
+}catch (error) {
+  console.error("SUBMIT ERROR:", error);
+  alert("Submission failed. Please try again.");
+}
   };
 
   const errorBannerStyle = {
