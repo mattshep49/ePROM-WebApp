@@ -4,7 +4,7 @@ import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
 import { getAssessment } from "./services/assessmentService";
 
 import onTxOhs from "./data/OnTxOHS.json";
-import onTxSymptom from "./data/ONTX_SYMPTOM.json";
+import onTxSymptom from "./data/ontx_symptom.json";
 import offTxOhs from "./data/OffTxOHS.json";
 import offTxFactB from "./data/OFFTX_FACTB.json";
 
