@@ -136,10 +136,10 @@ export default function QuestionnaireRenderer({
         }
 
         return evaluateRule(
-          parentAnswer,
-          rule.operator,
-          rule.triggerValue
-        );
+    Number(parentAnswer),
+    rule.operator,
+    rule.triggerValue
+);
       }
     );
   };
@@ -246,7 +246,7 @@ export default function QuestionnaireRenderer({
         />
 
         <h1 style={{ margin: 0, fontSize: "28px" }}>
-          {questionnaire.questionnaireTitle}
+          {questionnaire.questionnaireCode}
         </h1>
 
         <div
