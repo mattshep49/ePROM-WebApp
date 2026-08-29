@@ -103,14 +103,28 @@ function App() {
   OFFTX_FACTB: offTxFactB,
 };
 
-const questionnaires =
-  assessment.questionnaires.map(
+const questionnaires = assessment.questionnaires
+  .map(
     (questionnaireCode: string) =>
       questionnaireMap[
         questionnaireCode as keyof typeof questionnaireMap
       ]
-  );
+  )
+  .filter(Boolean);
+console.log(
+  "Questionnaire codes:",
+  assessment.questionnaires
+);
 
+console.log(
+  "Questionnaire map:",
+  questionnaireMap
+);
+
+console.log(
+  "Mapped questionnaires:",
+  questionnaires
+);
   return (
     <div
       style={{
