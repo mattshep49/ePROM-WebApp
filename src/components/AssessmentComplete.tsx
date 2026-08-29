@@ -1,5 +1,4 @@
 import trustLogo from "../assets/trustlogo.png";
-import SymptomSeverity from "./SymptomSeverity";
 
 type ResponseItem = {
   questionCode: string;
@@ -77,115 +76,562 @@ export default function AssessmentComplete({
           </p>
         </div>
 
-        <h3>Submission Details</h3>
+        <h3 style={{ marginTop: "40px", marginBottom: "20px" }}>
+          Submission Details
+        </h3>
 
-        <p>
-          <strong>Assessment Reference:</strong>{" "}
-          {assessmentToken}
-        </p>
+        <div
+          style={{
+            background: "#f9fafb",
+            padding: "20px",
+            borderRadius: "12px",
+            marginBottom: "40px",
+            border: "1px solid #e5e7eb",
+          }}
+        >
+          <p style={{ marginBottom: "15px" }}>
+            <strong>Assessment Reference:</strong>{" "}
+            <span style={{ fontFamily: "monospace", color: "#005eb8" }}>
+              {assessmentToken}
+            </span>
+          </p>
 
-        <p>
-          <strong>Assessment Type:</strong>{" "}
-          {assessmentCode}
-        </p>
+          <p style={{ marginBottom: "15px" }}>
+            <strong>Assessment Type:</strong>{" "}
+            {assessmentCode}
+          </p>
 
-        <p>
-          <strong>Submitted:</strong>{" "}
-          {submittedDate}
-        </p>
+          <p style={{ marginBottom: "0" }}>
+            <strong>Submitted:</strong>{" "}
+            {submittedDate}
+          </p>
+        </div>
 
         {responseLookup["ONTX_OHS_Q1"] && (
           <>
-            <h2>Overall Health Today</h2>
+            <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
+              Overall Health Today
+            </h2>
 
             <div
               style={{
-                textAlign: "center",
-                marginBottom: "40px",
+                background: "#f0f7ff",
+                padding: "30px",
+                borderRadius: "12px",
+                marginBottom: "50px",
+                border: "2px solid #005eb8",
               }}
             >
-              <div
-                style={{
-                  fontSize: "72px",
-                  fontWeight: 700,
-                  color: "#005eb8",
-                }}
-              >
-                {responseLookup["ONTX_OHS_Q1"]}
+              <div style={{ marginBottom: "20px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "15px",
+                  }}
+                >
+                  <strong style={{ fontSize: "16px" }}>
+                    Health Score
+                  </strong>
+                  <span
+                    style={{
+                      fontSize: "20px",
+                      fontWeight: 700,
+                      color: "#005eb8",
+                    }}
+                  >
+                    {responseLookup["ONTX_OHS_Q1"]} / 100
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    height: "30px",
+                    background: "#e5e5e5",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: `${responseLookup["ONTX_OHS_Q1"]}%`,
+                      height: "100%",
+                      borderRadius: "12px",
+                      background:
+                        Number(responseLookup["ONTX_OHS_Q1"]) >= 70
+                          ? "#28a745"
+                          : Number(responseLookup["ONTX_OHS_Q1"]) >= 40
+                            ? "#ffc107"
+                            : "#dc3545",
+                      transition: "width 0.3s ease",
+                    }}
+                  />
+                </div>
               </div>
 
-              <div
-                style={{
-                  fontSize: "18px",
-                }}
-              >
-                out of 100
+              <div style={{ fontSize: "14px", color: "#666" }}>
+                0 is the worst health you can imagine, 100 is the best
               </div>
             </div>
           </>
         )}
 
         {Object.keys(responseLookup).some(
-          (x) => x.startsWith("ONTX_SYMPTOM")
+          (x) => x.startsWith("ONTX_Q")
         ) && (
           <>
-            <h2>Symptom Summary</h2>
+            <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
+              On-Treatment Symptom Assessment
+            </h2>
 
-            <SymptomSeverity
-              label="Cough"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q1"] ?? 0)}
-            />
+            <div style={{ marginBottom: "50px" }}>
+              {responseLookup["ONTX_Q1"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Fatigue, Tiredness or Lack of Energy
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q1"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q1"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Dizziness"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q2"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q2"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Dizziness
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q2"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q2"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Fatigue"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q3"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q3"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Pain or Aching
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q3"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q3"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Nausea"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q4"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q4"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Nausea
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q4"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q4"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Pain"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q5"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q5"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Vomiting
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q5"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q5"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Diarrhoea"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q6"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q6"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Diarrhoea
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q6"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q6"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Constipation"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q7"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q7"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Constipation
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q7"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q7"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Itchiness"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q8"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q8"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Itchiness
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q8"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q8"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
 
-            <SymptomSeverity
-              label="Dry Skin"
-              value={Number(responseLookup["ONTX_SYMPTOM_Q9"] ?? 0)}
-            />
+              {responseLookup["ONTX_Q9"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Dry Skin
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q9"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q9"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {responseLookup["ONTX_Q10"] !== undefined && (
+                <div style={{ marginBottom: "25px" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <strong style={{ fontSize: "15px" }}>
+                      Hair Loss
+                    </strong>
+                    <span
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: 600,
+                        color: "#005eb8",
+                      }}
+                    >
+                      {responseLookup["ONTX_Q10"]} / 4
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      height: "24px",
+                      background: "#e5e5e5",
+                      borderRadius: "12px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(Number(responseLookup["ONTX_Q10"]) / 4) * 100}%`,
+                        height: "100%",
+                        borderRadius: "12px",
+                        background: "#005eb8",
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
           </>
         )}
 
-        <h2>Additional Comments</h2>
+        <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
+          Additional Comments
+        </h2>
 
         <div
           style={{
             background: "#f5f7fa",
-            padding: "20px",
+            padding: "25px",
             borderRadius: "12px",
             border: "1px solid #d8dde0",
+            lineHeight: "1.6",
+            color: "#333",
+            marginBottom: "40px",
           }}
         >
           {
