@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import AssessmentComplete
+from "./AssessmentComplete";
+
 import { submitAssessment } from "../services/submissionService";
 import trustLogo from "../assets/trustlogo.png";
 import type {
@@ -21,6 +24,14 @@ export default function QuestionnaireRenderer({
   const urlParams = new URLSearchParams(
     window.location.search
   );
+
+  const [submitted, setSubmitted] =
+  useState(false);
+
+  const [submissionPayload,
+  setSubmissionPayload]
+
+
 
   const assessmentToken =
     urlParams.get("token") ?? "TEST123";
@@ -207,13 +218,16 @@ export default function QuestionnaireRenderer({
 
   console.log(result);
 
-  alert("Assessment submitted successfully.");
+  setSubmissionPayload(payload);
+setSubmitted(true);
 
 }catch (error) {
   console.error("SUBMIT ERROR:", error);
   alert("Submission failed. Please try again.");
 }
   };
+  
+  
 
   const errorBannerStyle = {
     background: "#fef0f0",
@@ -226,7 +240,11 @@ export default function QuestionnaireRenderer({
   };
 
   let previousSection = "";
+if (submitted && submissionPayload) {
 
+  return (
+    <AssessmentComplete
+      
   return (
     <main
       style={{
