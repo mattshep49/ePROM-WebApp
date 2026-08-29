@@ -1,80 +1,111 @@
-import { useEffect, useState } from "react";
-import AssessmentComplete
-from "./AssessmentComplete";
+import {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
-import { submitAssessment } from "../services/submissionService";
-import trustLogo from "../assets/trustlogo.png";
 import type {
   Questionnaire,
   Question,
 } from "../types/questionnaire";
 
+type AnswerValue = string | number;
+
+type Answers = Record<string, AnswerValue>;
+
 type Props = {
   questionnaire: Questionnaire;
-};
 
-type Answers = Record<string, string | number>;
+  onAnswersChange: (
+    questionnaireCode: string,
+    answers: Answers
+  ) => void;
+};
 
 export default function QuestionnaireRenderer({
   questionnaire,
+  onAnswersChange,
 }: Props) {
-  const [answers, setAnswers] = useState<Answers>({});
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [answers, setAnswers] =
+    useState<Answers>({});
 
-  const urlParams = new URLSearchParams(
-    window.location.search
-  );
+  const [isLoaded, setIsLoaded] =
+    useState(false);
 
-  const [submitted, setSubmitted] =
-  useState(false);
-
-const [submissionPayload,
-  setSubmissionPayload] =
-  useState<any>(null);
-
-
-
-  const assessmentToken =
-    urlParams.get("token") ?? "TEST123";
+  /*
+   * Keep the latest callback without causing the answer effect
+   * to rerun whenever App.tsx renders.
+   */
+  const onAnswersChangeRef =
+    useRef(onAnswersChange);
 
   useEffect(() => {
+    onAnswersChangeRef.current =
+      onAnswersChange;
+  }, [onAnswersChange]);
+
+  /*
+   * Restore any locally saved answers for this questionnaire.
+   */
+  useEffect(() => {
+    const storageKey =
+      `eprom-${questionnaire.questionnaireCode}`;
+
     const savedAnswers =
-      localStorage.getItem(
-        `eprom-${questionnaire.questionnaireCode}`
-      );
+      localStorage.getItem(storageKey);
+
+    let restoredAnswers: Answers = {};
 
     if (savedAnswers) {
       try {
-        setAnswers(JSON.parse(savedAnswers));
-      } catch {
+        restoredAnswers =
+          JSON.parse(savedAnswers) as Answers;
+      } catch (error) {
         console.error(
-          "Unable to restore saved answers"
+          "Unable to restore saved answers:",
+          error
         );
       }
     }
+
+    setAnswers(restoredAnswers);
     setIsLoaded(true);
+
+    onAnswersChangeRef.current(
+      questionnaire.questionnaireCode,
+      restoredAnswers
+    );
   }, [questionnaire.questionnaireCode]);
 
+  /*
+   * Save answers locally and report them to App.tsx.
+   */
   useEffect(() => {
-    if (!isLoaded) return;
+    if (!isLoaded) {
+      return;
+    }
+
+    const storageKey =
+      `eprom-${questionnaire.questionnaireCode}`;
 
     localStorage.setItem(
-      `eprom-${questionnaire.questionnaireCode}`,
+      storageKey,
       JSON.stringify(answers)
+    );
+
+    onAnswersChangeRef.current(
+      questionnaire.questionnaireCode,
+      answers
     );
   }, [
     answers,
-    questionnaire.questionnaireCode,
     isLoaded,
+    questionnaire.questionnaireCode,
   ]);
-
-
-  const [validationErrors, setValidationErrors] =
-    useState<string[]>([]);
 
   const updateAnswer = (
     questionCode: string,
-    value: number
+    value: AnswerValue
   ) => {
     setAnswers((currentAnswers) => ({
       ...currentAnswers,
@@ -87,7 +118,9 @@ const [submissionPayload,
     operator: string,
     triggerValue: number
   ): boolean => {
-    switch (operator.trim().toLowerCase()) {
+    switch (
+      operator.trim().toLowerCase()
+    ) {
       case "equals":
       case "equal":
       case "=":
@@ -116,161 +149,102 @@ const [submissionPayload,
         return answer <= triggerValue;
 
       default:
-        console.warn(`Unsupported branch operator: ${operator}`);
+        console.warn(
+          `Unsupported branch operator: ${operator}`
+        );
+
         return false;
     }
   };
 
-  const isQuestionVisible = (question: Question): boolean => {
-    const controllingRules = questionnaire.questions.flatMap(
-      (parentQuestion) =>
-        (parentQuestion.branchRules ?? [])
-          .filter(
-            (rule) =>
-              rule.targetQuestion === question.questionCode &&
-              rule.action.trim().toLowerCase() === "show"
+  const isQuestionVisible = (
+    question: Question
+  ): boolean => {
+    const controllingRules =
+      questionnaire.questions.flatMap(
+        (parentQuestion) =>
+          (
+            parentQuestion.branchRules ?? []
           )
-          .map((rule) => ({
-            parentQuestionCode: parentQuestion.questionCode,
-            rule,
-          }))
-    );
+            .filter(
+              (rule) =>
+                rule.targetQuestion ===
+                  question.questionCode &&
+                rule.action
+                  .trim()
+                  .toLowerCase() === "show"
+            )
+            .map((rule) => ({
+              parentQuestionCode:
+                parentQuestion.questionCode,
+              rule,
+            }))
+      );
 
     if (controllingRules.length === 0) {
       return true;
     }
 
     return controllingRules.some(
-      ({ parentQuestionCode, rule }) => {
-        const parentAnswer = answers[parentQuestionCode];
+      ({
+        parentQuestionCode,
+        rule,
+      }) => {
+        const parentAnswer =
+          answers[parentQuestionCode];
 
         if (parentAnswer === undefined) {
           return false;
         }
 
         return evaluateRule(
-    Number(parentAnswer),
-    rule.operator,
-    rule.triggerValue
-);
+          Number(parentAnswer),
+          rule.operator,
+          rule.triggerValue
+        );
       }
     );
   };
 
-  const visibleQuestions = questionnaire.questions
-    .filter(isQuestionVisible)
-    .sort((a, b) => a.displayOrder - b.displayOrder);
+  const visibleQuestions =
+    questionnaire.questions
+      .filter(isQuestionVisible)
+      .sort(
+        (first, second) =>
+          first.displayOrder -
+          second.displayOrder
+      );
 
-  const answeredVisibleQuestions = visibleQuestions.filter(
-    (question) => answers[question.questionCode] !== undefined
-  ).length;
+  const answeredVisibleQuestions =
+    visibleQuestions.filter(
+      (question) =>
+        answers[question.questionCode] !==
+        undefined
+    ).length;
 
   const progress =
     visibleQuestions.length === 0
       ? 0
       : Math.round(
-          (answeredVisibleQuestions / visibleQuestions.length) * 100
+          (
+            answeredVisibleQuestions /
+            visibleQuestions.length
+          ) * 100
         );
 
-  const validateAssessment = () => {
-    const missing = visibleQuestions.filter(
-      (q) => q.mandatory && answers[q.questionCode] === undefined
-    );
-    setValidationErrors(missing.map((q) => q.questionCode));
-    return missing;
-  };
-
-  const handleSubmit = async () => {
-    const missingQuestions = validateAssessment();
-
-    if (missingQuestions.length > 0) {
-      const firstQuestion = document.getElementById(
-        missingQuestions[0].questionCode
-      );
-
-      firstQuestion?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-
-      alert(
-        `Please complete ${missingQuestions.length} required question(s).`
-      );
-      return;
-    }
-
-    setValidationErrors([]);
-
-    const payload = {
-      assessmentToken: assessmentToken,
-      assessmentCode: questionnaire.questionnaireCode,
-      submittedDate: new Date().toISOString(),
-      responses: Object.entries(answers).map(
-        ([questionCode, responseValue]) => ({
-          questionCode,
-          responseValue,
-        })
-      ),
-    };
-
-    try {
-
-  const result = await submitAssessment(payload);
-
-  console.log(result);
-
-  setSubmissionPayload(payload);
-setSubmitted(true);
-
-}catch (error) {
-  console.error("SUBMIT ERROR:", error);
-  alert("Submission failed. Please try again.");
-}
-  };
-  
-  
-
-  const errorBannerStyle = {
-    background: "#fef0f0",
-    border: "2px solid #d5281b",
-    color: "#d5281b",
-    padding: "16px",
-    borderRadius: "12px",
-    marginBottom: "24px",
-    fontWeight: 600 as const,
-  };
-
   let previousSection = "";
-if (submitted && submissionPayload) {
 
   return (
-    <AssessmentComplete
-      assessmentToken={
-        submissionPayload.assessmentToken
-      }
-      assessmentCode={
-        submissionPayload.assessmentCode
-      }
-      submittedDate={
-        submissionPayload.submittedDate
-      }
-      responses={
-        submissionPayload.responses
-      }
-    />
-  );
-
-}
-return (
-  <main
+    <main
       style={{
         maxWidth: "900px",
-        margin: "0 auto 48px auto",
-        fontFamily: "Arial, Helvetica, sans-serif",
+        margin: "0 auto 48px",
+        fontFamily:
+          "Arial, Helvetica, sans-serif",
         color: "#212b32",
       }}
     >
-            <header
+      <header
         style={{
           padding: "28px",
           marginBottom: "28px",
@@ -278,19 +252,16 @@ return (
           background:
             "linear-gradient(135deg, #005eb8 0%, #003d78 100%)",
           borderRadius: "14px",
-          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.14)",
+          boxShadow:
+            "0 4px 14px rgba(0, 0, 0, 0.14)",
         }}
       >
-        <img
-          src={trustLogo}
-          alt="Trust Logo"
+        <h1
           style={{
-            height: "60px",
-            marginBottom: "16px",
+            margin: 0,
+            fontSize: "28px",
           }}
-        />
-
-        <h1 style={{ margin: 0, fontSize: "28px" }}>
+        >
           {questionnaire.questionnaireCode}
         </h1>
 
@@ -299,7 +270,8 @@ return (
             marginTop: "20px",
             height: "12px",
             overflow: "hidden",
-            background: "rgba(255, 255, 255, 0.25)",
+            background:
+              "rgba(255, 255, 255, 0.25)",
             borderRadius: "999px",
           }}
         >
@@ -309,166 +281,219 @@ return (
               height: "100%",
               background: "#ffffff",
               borderRadius: "999px",
-              transition: "width 250ms ease",
+              transition:
+                "width 250ms ease",
             }}
           />
         </div>
 
-        <p style={{ margin: "10px 0 0 0", fontSize: "14px" }}>
-          {answeredVisibleQuestions} of {visibleQuestions.length}{" "}
-          questions answered, {progress}% complete
+        <p
+          style={{
+            margin: "10px 0 0",
+            fontSize: "14px",
+          }}
+        >
+          {answeredVisibleQuestions} of{" "}
+          {visibleQuestions.length} questions
+          answered, {progress}% complete
         </p>
       </header>
-            
-      {validationErrors.length > 0 && (
-        <div style={errorBannerStyle}>
-          Please complete all required questions before submitting.
-        </div>
-      )}
 
-      {visibleQuestions.map((question) => {
-        const showSection = question.section !== previousSection;
-        previousSection = question.section;
+      {visibleQuestions.map(
+        (question) => {
+          const showSection =
+            question.section !==
+            previousSection;
 
-        const currentAnswer = answers[question.questionCode];
-        const isSlider =
-          question.responseType.toLowerCase() === "integer" ||
-          question.scaleCode.toUpperCase() === "VAS_0_100";
-        const isText =
-          question.responseType.toLowerCase() === "text" ||
-          question.scaleCode.toUpperCase() === "FREE_TEXT";
+          previousSection =
+            question.section;
 
-        return (
-          <section key={question.questionCode}>
-            {showSection && (
-              <div
-                style={{
-                  margin: "34px 0 18px 0",
-                  paddingBottom: "10px",
-                  borderBottom: "4px solid #005eb8",
-                }}
-              >
-                <h2
+          const currentAnswer =
+            answers[
+              question.questionCode
+            ];
+
+          const responseType =
+            question.responseType
+              .trim()
+              .toLowerCase();
+
+          const scaleCode =
+            question.scaleCode
+              .trim()
+              .toUpperCase();
+
+          const isSlider =
+            responseType === "integer" ||
+            scaleCode === "VAS_0_100";
+
+          const isText =
+            responseType === "text" ||
+            scaleCode === "FREE_TEXT";
+
+          return (
+            <section
+              key={
+                question.questionCode
+              }
+            >
+              {showSection && (
+                <div
                   style={{
-                    margin: 0,
-                    color: "#005eb8",
-                    fontSize: "24px",
+                    margin:
+                      "34px 0 18px",
+                    paddingBottom: "10px",
+                    borderBottom:
+                      "4px solid #005eb8",
                   }}
                 >
-                  {question.section}
-                </h2>
-              </div>
-            )}
-
-            <article
-              id={question.questionCode}
-              style={{
-                padding: "24px",
-                marginBottom: "20px",
-                background: "#ffffff",
-                border: validationErrors.includes(
-                  question.questionCode
-                )
-                  ? "3px solid #d5281b"
-                  : "1px solid #d8dde0",
-                borderRadius: "14px",
-                boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-              }}
-            >
-              <p
-                style={{
-                  margin: "0 0 8px 0",
-                  color: "#4c6272",
-                  fontSize: "14px",
-                  fontWeight: 700,
-                }}
-              >
-                {question.questionNumber}
-              </p>
-
-              <h3
-                style={{
-                  margin: "0 0 22px 0",
-                  color: "#212b32",
-                  fontSize: "20px",
-                  lineHeight: 1.45,
-                }}
-              >
-                {question.questionText}
-              </h3>
-
-              {isSlider ? (
-                <div>
-                  <output
+                  <h2
                     style={{
-                      display: "block",
-                      marginBottom: "16px",
+                      margin: 0,
                       color: "#005eb8",
-                      fontSize: "42px",
-                      fontWeight: 700,
-                      textAlign: "center",
+                      fontSize: "24px",
                     }}
                   >
-                    {currentAnswer === undefined
-                      ? "Select a value"
-                      : currentAnswer}
-                  </output>
-
-                  <input
-                    aria-label={question.questionText}
-                    type="range"
-                    min={0}
-                    max={100}
-                    step={1}
-                    value={
-                      typeof currentAnswer === "number"
-                        ? currentAnswer
-                        : 50
-                    }
-                    onChange={(event) =>
-                      updateAnswer(
-                        question.questionCode,
-                        Number(event.target.value)
-                      )
-                    }
-                    style={{
-                      width: "100%",
-                      accentColor: "#005eb8",
-                      cursor: "pointer",
-                    }}
-                  />
-
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      gap: "20px",
-                      marginTop: "12px",
-                      color: "#4c6272",
-                      fontSize: "14px",
-                      fontWeight: 600,
-                    }}
-                  >
-                    <span>0: Worst health imaginable</span>
-                    <span style={{ textAlign: "right" }}>
-                      100: Best health imaginable
-                    </span>
-                  </div>
+                    {question.section}
+                  </h2>
                 </div>
-              ) : isText ? (
-                <div>
+              )}
+
+              <article
+                id={
+                  question.questionCode
+                }
+                style={{
+                  padding: "24px",
+                  marginBottom: "20px",
+                  background: "#ffffff",
+                  border:
+                    "1px solid #d8dde0",
+                  borderRadius: "14px",
+                  boxShadow:
+                    "0 2px 8px rgba(0, 0, 0, 0.08)",
+                }}
+              >
+                <p
+                  style={{
+                    margin:
+                      "0 0 8px",
+                    color: "#4c6272",
+                    fontSize: "14px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {
+                    question.questionNumber
+                  }
+                </p>
+
+                <h3
+                  style={{
+                    margin:
+                      "0 0 22px",
+                    color: "#212b32",
+                    fontSize: "20px",
+                    lineHeight: 1.45,
+                  }}
+                >
+                  {
+                    question.questionText
+                  }
+                </h3>
+
+                {isSlider ? (
+                  <div>
+                    <output
+                      style={{
+                        display: "block",
+                        marginBottom:
+                          "16px",
+                        color: "#005eb8",
+                        fontSize: "42px",
+                        fontWeight: 700,
+                        textAlign:
+                          "center",
+                      }}
+                    >
+                      {currentAnswer ===
+                      undefined
+                        ? "Select a value"
+                        : currentAnswer}
+                    </output>
+
+                    <input
+                      aria-label={
+                        question.questionText
+                      }
+                      type="range"
+                      min={0}
+                      max={100}
+                      step={1}
+                      value={
+                        typeof currentAnswer ===
+                        "number"
+                          ? currentAnswer
+                          : 50
+                      }
+                      onChange={(event) =>
+                        updateAnswer(
+                          question.questionCode,
+                          Number(
+                            event.target
+                              .value
+                          )
+                        )
+                      }
+                      style={{
+                        width: "100%",
+                        accentColor:
+                          "#005eb8",
+                        cursor: "pointer",
+                      }}
+                    />
+
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent:
+                          "space-between",
+                        gap: "20px",
+                        marginTop: "12px",
+                        color: "#4c6272",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      <span>
+                        0: Worst health
+                        imaginable
+                      </span>
+
+                      <span
+                        style={{
+                          textAlign:
+                            "right",
+                        }}
+                      >
+                        100: Best health
+                        imaginable
+                      </span>
+                    </div>
+                  </div>
+                ) : isText ? (
                   <textarea
                     value={
-                      typeof currentAnswer === "string"
+                      typeof currentAnswer ===
+                      "string"
                         ? currentAnswer
                         : ""
                     }
                     onChange={(event) =>
-                      setAnswers((currentAnswers) => ({
-                        ...currentAnswers,
-                        [question.questionCode]:
-                          event.target.value,
-                      }))
+                      updateAnswer(
+                        question.questionCode,
+                        event.target.value
+                      )
                     }
                     rows={6}
                     placeholder="Enter your comments here..."
@@ -476,109 +501,104 @@ return (
                       width: "100%",
                       padding: "12px",
                       borderRadius: "10px",
-                      border: "1px solid #b1b4b6",
+                      border:
+                        "1px solid #b1b4b6",
                       fontSize: "16px",
                       fontFamily: "inherit",
                       resize: "vertical",
-                      boxSizing: "border-box",
+                      boxSizing:
+                        "border-box",
                     }}
                   />
-                </div>
-              ) : (
-                <div>
-                  {question.options.map((option) => {
-                    const selected =
-                      currentAnswer === option.value;
+                ) : (
+                  <div>
+                    {question.options.map(
+                      (option) => {
+                        const selected =
+                          currentAnswer ===
+                          option.value;
 
-                    return (
-                      <label
-                        key={`${question.questionCode}-${option.value}`}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "12px",
-                          padding: "14px 16px",
-                          marginBottom: "10px",
-                          background: selected
-                            ? "#e8f1f8"
-                            : "#ffffff",
-                          border: selected
-                            ? "2px solid #005eb8"
-                            : "1px solid #b1b4b6",
-                          borderRadius: "10px",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <input
-                          type="radio"
-                          name={question.questionCode}
-                          value={option.value}
-                          checked={selected}
-                          onChange={() =>
-                            updateAnswer(
-                              question.questionCode,
-                              option.value
-                            )
-                          }
-                          style={{
-                            width: "20px",
-                            height: "20px",
-                            accentColor: "#005eb8",
-                          }}
-                        />
-                        <span>{option.text}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
+                        return (
+                          <label
+                            key={`${question.questionCode}-${option.value}`}
+                            style={{
+                              display:
+                                "flex",
+                              alignItems:
+                                "center",
+                              gap: "12px",
+                              padding:
+                                "14px 16px",
+                              marginBottom:
+                                "10px",
+                              background:
+                                selected
+                                  ? "#e8f1f8"
+                                  : "#ffffff",
+                              border:
+                                selected
+                                  ? "2px solid #005eb8"
+                                  : "1px solid #b1b4b6",
+                              borderRadius:
+                                "10px",
+                              cursor:
+                                "pointer",
+                            }}
+                          >
+                            <input
+                              type="radio"
+                              name={
+                                question.questionCode
+                              }
+                              value={
+                                option.value
+                              }
+                              checked={
+                                selected
+                              }
+                              onChange={() =>
+                                updateAnswer(
+                                  question.questionCode,
+                                  option.value
+                                )
+                              }
+                              style={{
+                                width:
+                                  "20px",
+                                height:
+                                  "20px",
+                                accentColor:
+                                  "#005eb8",
+                              }}
+                            />
 
-              {question.mandatory && (
-                <p
-                  style={{
-                    margin: "16px 0 0 0",
-                    color: "#4c6272",
-                    fontSize: "13px",
-                  }}
-                >
-                  Required question
-                </p>
-              )}
-            </article>
-          </section>
-        );
-      })}
+                            <span>
+                              {option.text}
+                            </span>
+                          </label>
+                        );
+                      }
+                    )}
+                  </div>
+                )}
 
-      {validationErrors.length > 0 && (
-        <div style={errorBannerStyle}>
-          Please complete all required questions before submitting.
-        </div>
+                {question.mandatory && (
+                  <p
+                    style={{
+                      margin:
+                        "16px 0 0",
+                      color: "#4c6272",
+                      fontSize: "13px",
+                    }}
+                  >
+                    Required question
+                  </p>
+                )}
+              </article>
+            </section>
+          );
+        }
       )}
-
-      <div
-        style={{
-          marginTop: "40px",
-          marginBottom: "40px",
-          textAlign: "center",
-        }}
-      >
-        <button
-          onClick={handleSubmit}
-          style={{
-            background: "#005eb8",
-            color: "white",
-            border: "none",
-            padding: "16px 32px",
-            borderRadius: "12px",
-            fontSize: "18px",
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          }}
-        >
-          Submit Assessment
-        </button>
-      </div>
     </main>
   );
 }
