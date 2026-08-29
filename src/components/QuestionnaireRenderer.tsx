@@ -8,7 +8,7 @@ import type {
   Questionnaire,
   Question,
 } from "../types/questionnaire";
-
+type AnswerValue = string | number;
 type Answers = Record<string, string | number>;
 
 type QuestionnaireState = {
@@ -92,41 +92,23 @@ export default function QuestionnaireRenderer({
       JSON.stringify(answers)
     );
 
-    useEffect(() => {
-  if (!isLoaded) {
-    return;
-  }
+    const visibleRequiredQuestionCodes =
+      visibleQuestions
+        .filter((question) => question.mandatory)
+        .map((question) => question.questionCode);
 
-  const storageKey =
-    `eprom-${questionnaire.questionnaireCode}`;
-
-  localStorage.setItem(
-    storageKey,
-    JSON.stringify(answers)
-  );
-
-  const visibleRequiredQuestionCodes =
-    visibleQuestions
-      .filter((question) => question.mandatory)
-      .map((question) => question.questionCode);
-
-  onAnswersChangeRef.current(
-    questionnaire.questionnaireCode,
-    {
-      answers,
-      visibleRequiredQuestionCodes,
-    }
-  );
-}, [
-  answers,
-  isLoaded,
-  questionnaire.questionnaireCode,
-  visibleQuestions,
-]);
+    onAnswersChangeRef.current(
+      questionnaire.questionnaireCode,
+      {
+        answers,
+        visibleRequiredQuestionCodes,
+      }
+    );
   }, [
     answers,
     isLoaded,
     questionnaire.questionnaireCode,
+    visibleQuestions,
   ]);
 
   const updateAnswer = (

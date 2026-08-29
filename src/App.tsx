@@ -144,14 +144,14 @@ const [questionnaireStates, setQuestionnaireStates] =
   }, [assessment, questionnaireMap]);
 
   function handleAnswersChange(
-  questionnaireCode: string,
-  state: QuestionnaireState
-) {
-  setQuestionnaireStates((current) => ({
-    ...current,
-    state,
-  }));
-}
+    questionnaireCode: string,
+    state: QuestionnaireState
+  ) {
+    setQuestionnaireStates((current) => ({
+      ...current,
+      [questionnaireCode]: state,
+    }));
+  }
 
   async function handleSubmit() {
     if (!assessment || !token) {
