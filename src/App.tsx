@@ -95,8 +95,7 @@ function App() {
       </div>
     );
   }
-console.log("offTxOhs =", offTxOhs);
-console.log("offTxFactB =", offTxFactB);
+
 
 const questionnaireMap = {
   ONTX_OHS: onTxOhs,
@@ -113,25 +112,14 @@ const questionnaires = assessment.questionnaires.map(
         questionnaireCode.trim() as keyof typeof questionnaireMap
       ];
 
-    console.log(
-      "QUESTIONNAIRE CODE:",
-      questionnaireCode
-    );
-
-    console.log(
-      "QUESTIONNAIRE OBJECT:",
-      questionnaire
-    );
+    
 
     return questionnaire;
 
   }
 );
 
-console.log(
-  "Mapped questionnaires:",
-  questionnaires
-);
+
   return (
     <div
       style={{
