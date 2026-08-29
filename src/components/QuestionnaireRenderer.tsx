@@ -28,8 +28,9 @@ export default function QuestionnaireRenderer({
   const [submitted, setSubmitted] =
   useState(false);
 
-  const [submissionPayload,
-  setSubmissionPayload]
+const [submissionPayload,
+  setSubmissionPayload] =
+  useState<any>(null);
 
 
 
@@ -244,9 +245,24 @@ if (submitted && submissionPayload) {
 
   return (
     <AssessmentComplete
-      
-  return (
-    <main
+      assessmentToken={
+        submissionPayload.assessmentToken
+      }
+      assessmentCode={
+        submissionPayload.assessmentCode
+      }
+      submittedDate={
+        submissionPayload.submittedDate
+      }
+      responses={
+        submissionPayload.responses
+      }
+    />
+  );
+
+}
+return (
+  <main
       style={{
         maxWidth: "900px",
         margin: "0 auto 48px auto",
