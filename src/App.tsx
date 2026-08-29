@@ -95,30 +95,37 @@ function App() {
       </div>
     );
   }
+console.log("offTxOhs =", offTxOhs);
+console.log("offTxFactB =", offTxFactB);
 
-  const questionnaireMap = {
+const questionnaireMap = {
   ONTX_OHS: onTxOhs,
   ONTX_SYMPTOM: onTxSymptom,
   OFFTX_OHS: offTxOhs,
   OFFTX_FACTB: offTxFactB,
 };
 
-const questionnaires = assessment.questionnaires
-  .map(
-    (questionnaireCode: string) =>
-      questionnaireMap[
-        questionnaireCode as keyof typeof questionnaireMap
-      ]
-  )
-  .filter(Boolean);
-console.log(
-  "Questionnaire codes:",
-  assessment.questionnaires
-);
+const questionnaires = assessment.questionnaires.map(
+  (questionnaireCode: string) => {
 
-console.log(
-  "Questionnaire map:",
-  questionnaireMap
+    const questionnaire =
+      questionnaireMap[
+        questionnaireCode.trim() as keyof typeof questionnaireMap
+      ];
+
+    console.log(
+      "QUESTIONNAIRE CODE:",
+      questionnaireCode
+    );
+
+    console.log(
+      "QUESTIONNAIRE OBJECT:",
+      questionnaire
+    );
+
+    return questionnaire;
+
+  }
 );
 
 console.log(
