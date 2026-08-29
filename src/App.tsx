@@ -282,7 +282,11 @@ const missingQuestionCodes =
           borderBottom: "1px solid #d8dde0",
         }}
       >
-        {hdftLogo}
+        <img
+          src={hdftLogo}
+          alt="Trust Logo"
+          style={{ maxWidth: "200px", marginBottom: "20px" }}
+        />
 
         <p style={{ margin: "12px 0 0" }}>
           Assessment reference: {token}
