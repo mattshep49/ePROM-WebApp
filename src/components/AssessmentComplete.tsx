@@ -51,7 +51,11 @@ export default function AssessmentComplete({
             marginBottom: "40px",
           }}
         >
-          {trustLogo}
+          <img
+            src={trustLogo}
+            alt="Trust Logo"
+            style={{ maxWidth: "200px", marginBottom: "20px" }}
+          />  
 
           <div
             style={{

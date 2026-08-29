@@ -40,8 +40,13 @@ function App() {
   const [assessment, setAssessment] =
     useState<Assessment | null>(null);
 
-  const [allAnswers, setAllAnswers] =
-    useState<Record<string, Answers>>({});
+  type QuestionnaireState = {
+  answers: Answers;
+  visibleRequiredQuestionCodes: string[];
+};
+
+const [questionnaireStates, setQuestionnaireStates] =
+  useState<Record<string, QuestionnaireState>>({});
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -139,14 +144,14 @@ function App() {
   }, [assessment, questionnaireMap]);
 
   function handleAnswersChange(
-    questionnaireCode: string,
-    answers: Answers
-  ) {
-    setAllAnswers((current) => ({
-      ...current,
-      [questionnaireCode]: answers,
-    }));
-  }
+  questionnaireCode: string,
+  state: QuestionnaireState
+) {
+  setQuestionnaireStates((current) => ({
+    ...current,
+    state,
+  }));
+}
 
   async function handleSubmit() {
     if (!assessment || !token) {
@@ -154,22 +159,27 @@ function App() {
     }
 
     const combinedAnswers = Object.assign(
-      {},
-      ...Object.values(allAnswers)
-    ) as Answers;
+  {},
+  ...Object.values(questionnaireStates).map(
+    (state) => state.answers
+  )
+) as Answers;
 
-    const missingQuestions = questionnaires.flatMap(
-      (questionnaire) =>
-        questionnaire.questions.filter(
-          (question) =>
-            question.mandatory &&
-            combinedAnswers[question.questionCode] === undefined
-        )
-    );
+const visibleRequiredQuestionCodes =
+  Object.values(questionnaireStates).flatMap(
+    (state) => state.visibleRequiredQuestionCodes
+  );
 
-    if (missingQuestions.length > 0) {
+const missingQuestionCodes =
+  visibleRequiredQuestionCodes.filter(
+    (questionCode) =>
+      combinedAnswers[questionCode] === undefined ||
+      combinedAnswers[questionCode] === ""
+  );
+
+    if (missingQuestionCodes.length > 0) {
       const firstMissingQuestion =
-        missingQuestions[0].questionCode;
+        missingQuestionCodes[0]; 
 
       document
         .getElementById(firstMissingQuestion)
@@ -179,8 +189,8 @@ function App() {
         });
 
       setSubmissionError(
-        `Please complete ${missingQuestions.length} required question(s).`
-      );
+  `Please complete ${missingQuestionCodes.length} required question(s).`
+);
 
       return;
     }

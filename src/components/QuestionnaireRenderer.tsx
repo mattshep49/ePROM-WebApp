@@ -9,16 +9,18 @@ import type {
   Question,
 } from "../types/questionnaire";
 
-type AnswerValue = string | number;
+type Answers = Record<string, string | number>;
 
-type Answers = Record<string, AnswerValue>;
+type QuestionnaireState = {
+  answers: Answers;
+  visibleRequiredQuestionCodes: string[];
+};
 
 type Props = {
   questionnaire: Questionnaire;
-
   onAnswersChange: (
     questionnaireCode: string,
-    answers: Answers
+    state: QuestionnaireState
   ) => void;
 };
 
@@ -71,10 +73,7 @@ export default function QuestionnaireRenderer({
     setAnswers(restoredAnswers);
     setIsLoaded(true);
 
-    onAnswersChangeRef.current(
-      questionnaire.questionnaireCode,
-      restoredAnswers
-    );
+    
   }, [questionnaire.questionnaireCode]);
 
   /*
@@ -93,10 +92,37 @@ export default function QuestionnaireRenderer({
       JSON.stringify(answers)
     );
 
-    onAnswersChangeRef.current(
-      questionnaire.questionnaireCode,
-      answers
-    );
+    useEffect(() => {
+  if (!isLoaded) {
+    return;
+  }
+
+  const storageKey =
+    `eprom-${questionnaire.questionnaireCode}`;
+
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify(answers)
+  );
+
+  const visibleRequiredQuestionCodes =
+    visibleQuestions
+      .filter((question) => question.mandatory)
+      .map((question) => question.questionCode);
+
+  onAnswersChangeRef.current(
+    questionnaire.questionnaireCode,
+    {
+      answers,
+      visibleRequiredQuestionCodes,
+    }
+  );
+}, [
+  answers,
+  isLoaded,
+  questionnaire.questionnaireCode,
+  visibleQuestions,
+]);
   }, [
     answers,
     isLoaded,
