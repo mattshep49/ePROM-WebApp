@@ -41,86 +41,6 @@ export default function QuestionnaireRenderer({
   const onAnswersChangeRef =
     useRef(onAnswersChange);
 
-  useEffect(() => {
-    onAnswersChangeRef.current =
-      onAnswersChange;
-  }, [onAnswersChange]);
-
-  /*
-   * Restore any locally saved answers for this questionnaire.
-   */
-  useEffect(() => {
-    const storageKey =
-      `eprom-${questionnaire.questionnaireCode}`;
-
-    const savedAnswers =
-      localStorage.getItem(storageKey);
-
-    let restoredAnswers: Answers = {};
-
-    if (savedAnswers) {
-      try {
-        restoredAnswers =
-          JSON.parse(savedAnswers) as Answers;
-      } catch (error) {
-        console.error(
-          "Unable to restore saved answers:",
-          error
-        );
-      }
-    }
-
-    setAnswers(restoredAnswers);
-    setIsLoaded(true);
-
-    
-  }, [questionnaire.questionnaireCode]);
-
-  /*
-   * Save answers locally and report them to App.tsx.
-   */
-  useEffect(() => {
-    if (!isLoaded) {
-      return;
-    }
-
-    const storageKey =
-      `eprom-${questionnaire.questionnaireCode}`;
-
-    localStorage.setItem(
-      storageKey,
-      JSON.stringify(answers)
-    );
-
-    const visibleRequiredQuestionCodes =
-      visibleQuestions
-        .filter((question) => question.mandatory)
-        .map((question) => question.questionCode);
-
-    onAnswersChangeRef.current(
-      questionnaire.questionnaireCode,
-      {
-        answers,
-        visibleRequiredQuestionCodes,
-      }
-    );
-  }, [
-    answers,
-    isLoaded,
-    questionnaire.questionnaireCode,
-    visibleQuestions,
-  ]);
-
-  const updateAnswer = (
-    questionCode: string,
-    value: AnswerValue
-  ) => {
-    setAnswers((currentAnswers) => ({
-      ...currentAnswers,
-      [questionCode]: value,
-    }));
-  };
-
   const evaluateRule = (
     answer: number,
     operator: string,
@@ -222,6 +142,86 @@ export default function QuestionnaireRenderer({
           first.displayOrder -
           second.displayOrder
       );
+
+  useEffect(() => {
+    onAnswersChangeRef.current =
+      onAnswersChange;
+  }, [onAnswersChange]);
+
+  /*
+   * Restore any locally saved answers for this questionnaire.
+   */
+  useEffect(() => {
+    const storageKey =
+      `eprom-${questionnaire.questionnaireCode}`;
+
+    const savedAnswers =
+      localStorage.getItem(storageKey);
+
+    let restoredAnswers: Answers = {};
+
+    if (savedAnswers) {
+      try {
+        restoredAnswers =
+          JSON.parse(savedAnswers) as Answers;
+      } catch (error) {
+        console.error(
+          "Unable to restore saved answers:",
+          error
+        );
+      }
+    }
+
+    setAnswers(restoredAnswers);
+    setIsLoaded(true);
+
+    
+  }, [questionnaire.questionnaireCode]);
+
+  /*
+   * Save answers locally and report them to App.tsx.
+   */
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    const storageKey =
+      `eprom-${questionnaire.questionnaireCode}`;
+
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify(answers)
+    );
+
+    const visibleRequiredQuestionCodes =
+      visibleQuestions
+        .filter((question) => question.mandatory)
+        .map((question) => question.questionCode);
+
+    onAnswersChangeRef.current(
+      questionnaire.questionnaireCode,
+      {
+        answers,
+        visibleRequiredQuestionCodes,
+      }
+    );
+  }, [
+    answers,
+    isLoaded,
+    questionnaire.questionnaireCode,
+    visibleQuestions,
+  ]);
+
+  const updateAnswer = (
+    questionCode: string,
+    value: AnswerValue
+  ) => {
+    setAnswers((currentAnswers) => ({
+      ...currentAnswers,
+      [questionCode]: value,
+    }));
+  };
 
   const answeredVisibleQuestions =
     visibleQuestions.filter(
