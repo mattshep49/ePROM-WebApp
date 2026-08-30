@@ -43,6 +43,23 @@ export default function AssessmentComplete({
     return question.responseType === "choice" || question.responseType === "integer";
   };
 
+  // Get color based on severity/value
+  const getSeverityColor = (value: number, scaleMax: number): string => {
+    const percentage = (value / scaleMax) * 100;
+    if (percentage >= 75) return "#dc3545"; // Red
+    if (percentage >= 50) return "#fd7e14"; // Orange
+    if (percentage >= 25) return "#ffc107"; // Yellow
+    return "#6c757d"; // Gray for very low
+  };
+
+  // Get scale label text (first and last option text)
+  const getScaleLabels = (question: any): { min: string; max: string } => {
+    const options = question.options || [];
+    const minLabel = options.length > 0 ? options[0].text : "Low";
+    const maxLabel = options.length > 0 ? options[options.length - 1].text : "High";
+    return { min: minLabel, max: maxLabel };
+  };
+
   // Group responses by questionnaire for display
   const groupedQuestions = questionnaires.map((questionnaire) => ({
     questionnaire,
@@ -217,15 +234,18 @@ export default function AssessmentComplete({
                 <div style={{ marginBottom: "50px" }}>
                   {group.questions
                     .filter(isNumericQuestion)
+                    .filter((q) => Number(responseLookup[q.questionCode]) !== 0)
                     .map((question) => {
                       const value = Number(responseLookup[question.questionCode]);
                       const scaleMax = getScaleMax(question.scaleCode);
                       const percentage = (value / scaleMax) * 100;
+                      const barColor = getSeverityColor(value, scaleMax);
+                      const labels = getScaleLabels(question);
 
                       return (
                         <div
                           key={question.questionCode}
-                          style={{ marginBottom: "25px" }}
+                          style={{ marginBottom: "30px" }}
                         >
                           <div
                             style={{
@@ -242,7 +262,7 @@ export default function AssessmentComplete({
                               style={{
                                 fontSize: "16px",
                                 fontWeight: 600,
-                                color: "#005eb8",
+                                color: barColor,
                               }}
                             >
                               {value} / {scaleMax}
@@ -254,6 +274,7 @@ export default function AssessmentComplete({
                               background: "#e5e5e5",
                               borderRadius: "12px",
                               overflow: "hidden",
+                              marginBottom: "6px",
                             }}
                           >
                             <div
@@ -261,9 +282,20 @@ export default function AssessmentComplete({
                                 width: `${percentage}%`,
                                 height: "100%",
                                 borderRadius: "12px",
-                                background: "#005eb8",
+                                background: barColor,
                               }}
                             />
+                          </div>
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              fontSize: "12px",
+                              color: "#666",
+                            }}
+                          >
+                            <span>{labels.min}</span>
+                            <span>{labels.max}</span>
                           </div>
                         </div>
                       );
