@@ -1,4 +1,5 @@
 import trustLogo from "../assets/trustlogo.png";
+import type { Questionnaire } from "../types/questionnaire";
 
 type ResponseItem = {
   questionCode: string;
@@ -10,6 +11,7 @@ type Props = {
   assessmentCode: string;
   submittedDate: string;
   responses: ResponseItem[];
+  questionnaires: Questionnaire[];
 };
 
 export default function AssessmentComplete({
@@ -17,6 +19,7 @@ export default function AssessmentComplete({
   assessmentCode,
   submittedDate,
   responses,
+  questionnaires,
 }: Props) {
 
   const responseLookup = Object.fromEntries(
@@ -25,6 +28,28 @@ export default function AssessmentComplete({
       r.responseValue,
     ])
   );
+
+  // Get max scale value based on scale code
+  const getScaleMax = (scaleCode: string): number => {
+    if (scaleCode === "VAS_0_100") return 100;
+    if (scaleCode.includes("_5")) return 4; // INTERFERENCE_5, FREQUENCY_5, SEVERITY_5, etc.
+    if (scaleCode.includes("_4")) return 3; // PAIN_SEVERITY_4, etc.
+    if (scaleCode === "YES_NO" || scaleCode === "YES_NO_NA") return 1;
+    return 4; // Default
+  };
+
+  // Check if question has numeric response
+  const isNumericQuestion = (question: any): boolean => {
+    return question.responseType === "choice" || question.responseType === "integer";
+  };
+
+  // Group responses by questionnaire for display
+  const groupedQuestions = questionnaires.map((questionnaire) => ({
+    questionnaire,
+    questions: questionnaire.questions
+      .filter((q) => responseLookup[q.questionCode] !== undefined)
+      .sort((a, b) => a.displayOrder - b.displayOrder),
+  }));
 
   return (
     <div
@@ -107,517 +132,147 @@ export default function AssessmentComplete({
           </p>
         </div>
 
-        {responseLookup["ONTX_OHS_Q1"] && (
-          <>
-            <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
-              Overall Health Today
-            </h2>
+        {groupedQuestions.map((group) => {
+          const hasResponses = group.questions.length > 0;
+          if (!hasResponses) return null;
 
-            <div
-              style={{
-                background: "#f0f7ff",
-                padding: "30px",
-                borderRadius: "12px",
-                marginBottom: "50px",
-                border: "2px solid #005eb8",
-              }}
-            >
-              <div style={{ marginBottom: "20px" }}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "15px",
-                  }}
-                >
-                  <strong style={{ fontSize: "16px" }}>
-                    Health Score
-                  </strong>
-                  <span
-                    style={{
-                      fontSize: "20px",
-                      fontWeight: 700,
-                      color: "#005eb8",
-                    }}
-                  >
-                    {responseLookup["ONTX_OHS_Q1"]} / 100
-                  </span>
-                </div>
+          return (
+            <div key={group.questionnaire.questionnaireCode}>
+              <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
+                {group.questionnaire.questionnaireCode === "ONTX_OHS" ||
+                group.questionnaire.questionnaireCode === "OFFTX_OHS"
+                  ? "Overall Health Today"
+                  : group.questionnaire.questionnaireCode}
+              </h2>
 
-                <div
-                  style={{
-                    height: "30px",
-                    background: "#e5e5e5",
-                    borderRadius: "12px",
-                    overflow: "hidden",
-                  }}
-                >
+              {group.questionnaire.questionnaireCode === "ONTX_OHS" ||
+              group.questionnaire.questionnaireCode === "OFFTX_OHS" ? (
+                // Special rendering for OHS questions (0-100 scale)
+                group.questions.map((question) => (
                   <div
+                    key={question.questionCode}
                     style={{
-                      width: `${responseLookup["ONTX_OHS_Q1"]}%`,
-                      height: "100%",
+                      background: "#f0f7ff",
+                      padding: "30px",
                       borderRadius: "12px",
-                      background:
-                        Number(responseLookup["ONTX_OHS_Q1"]) >= 70
-                          ? "#28a745"
-                          : Number(responseLookup["ONTX_OHS_Q1"]) >= 40
-                            ? "#ffc107"
-                            : "#dc3545",
-                      transition: "width 0.3s ease",
+                      marginBottom: "50px",
+                      border: "2px solid #005eb8",
                     }}
-                  />
-                </div>
-              </div>
+                  >
+                    <div style={{ marginBottom: "20px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "15px",
+                        }}
+                      >
+                        <strong style={{ fontSize: "16px" }}>
+                          Health Score
+                        </strong>
+                        <span
+                          style={{
+                            fontSize: "20px",
+                            fontWeight: 700,
+                            color: "#005eb8",
+                          }}
+                        >
+                          {responseLookup[question.questionCode]} / 100
+                        </span>
+                      </div>
 
-              <div style={{ fontSize: "14px", color: "#666" }}>
-                0 is the worst health you can imagine, 100 is the best
-              </div>
-            </div>
-          </>
-        )}
+                      <div
+                        style={{
+                          height: "30px",
+                          background: "#e5e5e5",
+                          borderRadius: "12px",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: `${responseLookup[question.questionCode]}%`,
+                            height: "100%",
+                            borderRadius: "12px",
+                            background:
+                              Number(responseLookup[question.questionCode]) >= 70
+                                ? "#28a745"
+                                : Number(responseLookup[question.questionCode]) >= 40
+                                  ? "#ffc107"
+                                  : "#dc3545",
+                            transition: "width 0.3s ease",
+                          }}
+                        />
+                      </div>
+                    </div>
 
-        {Object.keys(responseLookup).some(
-          (x) => x.startsWith("ONTX_Q")
-        ) && (
-          <>
-            <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
-              On-Treatment Symptom Assessment
-            </h2>
+                    <div style={{ fontSize: "14px", color: "#666" }}>
+                      0 is the worst health you can imagine, 100 is the best
+                    </div>
+                  </div>
+                ))
+              ) : (
+                // Standard bar rendering for other questions
+                <div style={{ marginBottom: "50px" }}>
+                  {group.questions
+                    .filter(isNumericQuestion)
+                    .map((question) => {
+                      const value = Number(responseLookup[question.questionCode]);
+                      const scaleMax = getScaleMax(question.scaleCode);
+                      const percentage = (value / scaleMax) * 100;
 
-            <div style={{ marginBottom: "50px" }}>
-              {responseLookup["ONTX_Q1"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Fatigue, Tiredness or Lack of Energy
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q1"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q1"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q2"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Dizziness
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q2"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q2"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q3"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Pain or Aching
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q3"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q3"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q4"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Nausea
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q4"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q4"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q5"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Vomiting
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q5"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q5"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q6"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Diarrhoea
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q6"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q6"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q7"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Constipation
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q7"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q7"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q8"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Itchiness
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q8"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q8"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q9"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Dry Skin
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q9"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q9"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {responseLookup["ONTX_Q10"] !== undefined && (
-                <div style={{ marginBottom: "25px" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <strong style={{ fontSize: "15px" }}>
-                      Hair Loss
-                    </strong>
-                    <span
-                      style={{
-                        fontSize: "16px",
-                        fontWeight: 600,
-                        color: "#005eb8",
-                      }}
-                    >
-                      {responseLookup["ONTX_Q10"]} / 4
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      height: "24px",
-                      background: "#e5e5e5",
-                      borderRadius: "12px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(Number(responseLookup["ONTX_Q10"]) / 4) * 100}%`,
-                        height: "100%",
-                        borderRadius: "12px",
-                        background: "#005eb8",
-                      }}
-                    />
-                  </div>
+                      return (
+                        <div
+                          key={question.questionCode}
+                          style={{ marginBottom: "25px" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                            }}
+                          >
+                            <strong style={{ fontSize: "15px" }}>
+                              {question.questionText}
+                            </strong>
+                            <span
+                              style={{
+                                fontSize: "16px",
+                                fontWeight: 600,
+                                color: "#005eb8",
+                              }}
+                            >
+                              {value} / {scaleMax}
+                            </span>
+                          </div>
+                          <div
+                            style={{
+                              height: "24px",
+                              background: "#e5e5e5",
+                              borderRadius: "12px",
+                              overflow: "hidden",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: `${percentage}%`,
+                                height: "100%",
+                                borderRadius: "12px",
+                                background: "#005eb8",
+                              }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               )}
             </div>
-          </>
-        )}
+          );
+        })}
 
         <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
           Additional Comments

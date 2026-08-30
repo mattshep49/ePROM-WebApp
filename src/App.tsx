@@ -1,15 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
 import AssessmentComplete from "./components/AssessmentComplete";
 
-import { getAssessment } from "./services/assessmentService";
+import { getAssessment, getQuestionnaires } from "./services/assessmentService";
 import { submitAssessment } from "./services/submissionService";
-
-import onTxOhs from "./data/OnTxOHS.json";
-import onTxSymptom from "./data/ontx_symptom.json";
-import offTxOhs from "./data/OffTxOHS.json";
-import offTxFactB from "./data/OFFTX_FACTB.json";
 
 import hdftLogo from "./assets/trustlogo.png";
 
@@ -60,6 +55,9 @@ const [questionnaireStates, setQuestionnaireStates] =
   const [submissionPayload, setSubmissionPayload] =
     useState<SubmissionPayload | null>(null);
 
+  const [questionnaires, setQuestionnaires] =
+    useState<Questionnaire[]>([]);
+
   const token = new URLSearchParams(
     window.location.search
   ).get("token");
@@ -89,6 +87,27 @@ const [questionnaireStates, setQuestionnaireStates] =
         }
 
         setAssessment(result as Assessment);
+
+        // Fetch questionnaires from API
+        try {
+          const questionnairesData = await getQuestionnaires(
+            result.questionnaires
+          );
+
+          // Convert to array format
+          const questionnairesArray = result.questionnaires
+            .map(
+              (code: string) => questionnairesData[code]
+            )
+            .filter((q: Questionnaire | undefined) => Boolean(q));
+
+          setQuestionnaires(questionnairesArray);
+        } catch (questionsError) {
+          console.warn(
+            "Failed to fetch questionnaires from API",
+            questionsError
+          );
+        }
       } catch (error) {
         const message =
           error instanceof Error
@@ -115,33 +134,7 @@ const [questionnaireStates, setQuestionnaireStates] =
     void loadAssessment();
   }, [token]);
 
-  const questionnaireMap = useMemo(
-    () => ({
-      ONTX_OHS: onTxOhs,
-      ONTX_SYMPTOM: onTxSymptom,
-      OFFTX_OHS: offTxOhs,
-      OFFTX_FACTB: offTxFactB,
-    }),
-    []
-  );
 
-  const questionnaires = useMemo(() => {
-    if (!assessment) {
-      return [];
-    }
-
-    return assessment.questionnaires
-      .map(
-        (questionnaireCode) =>
-          questionnaireMap[
-            questionnaireCode.trim() as keyof typeof questionnaireMap
-          ]
-      )
-      .filter(
-        (questionnaire): questionnaire is Questionnaire =>
-          Boolean(questionnaire)
-      );
-  }, [assessment, questionnaireMap]);
 
   function handleAnswersChange(
     questionnaireCode: string,
@@ -263,6 +256,7 @@ const missingQuestionCodes =
         assessmentCode={submissionPayload.questionnaireSet}
         submittedDate={submissionPayload.submittedDate}
         responses={submissionPayload.responses}
+        questionnaires={questionnaires}
       />
     );
   }
