@@ -119,7 +119,7 @@ export default function AssessmentComplete({
           <h1>Assessment Submitted</h1>
 
           <p>
-            Thank you for completing your assessment.
+            Thank you for completing your assessment. You can review your responses below. If you have any questions or need further assistance, please contact the oncology helpline. Responses where you indicated none or never are not displayed.
           </p>
         </div>
 
