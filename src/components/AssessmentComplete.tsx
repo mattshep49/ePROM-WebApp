@@ -43,13 +43,18 @@ export default function AssessmentComplete({
     return question.responseType === "choice" || question.responseType === "integer";
   };
 
+  // Check if question is free text/comment type
+  const isTextQuestion = (question: any): boolean => {
+    return question.responseType === "text" || question.responseType === "free_text";
+  };
+
   // Get color based on severity/value
   const getSeverityColor = (value: number, scaleMax: number): string => {
     const percentage = (value / scaleMax) * 100;
-    if (percentage >= 75) return "#dc3545"; // Red
-    if (percentage >= 50) return "#fd7e14"; // Orange
-    if (percentage >= 25) return "#ffc107"; // Yellow
-    return "#6c757d"; // Gray for very low
+    if (percentage >= 79) return "#dc3545"; // Red
+    if (percentage >= 61) return "#fd7e14"; // Orange
+    if (percentage >= 31) return "#ffc107"; // Yellow
+    return "#005eb8"; // Blue for 0-30%
   };
 
   // Get scale label text (first and last option text)
@@ -296,6 +301,46 @@ export default function AssessmentComplete({
                           >
                             <span>{labels.min}</span>
                             <span>{labels.max}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                  {/* Free text/comment questions */}
+                  {group.questions
+                    .filter(isTextQuestion)
+                    .map((question) => {
+                      const value = responseLookup[question.questionCode];
+                      if (!value) return null;
+
+                      return (
+                        <div
+                          key={question.questionCode}
+                          style={{ marginBottom: "30px" }}
+                        >
+                          <div
+                            style={{
+                              marginBottom: "10px",
+                            }}
+                          >
+                            <strong style={{ fontSize: "15px" }}>
+                              {question.questionText}
+                            </strong>
+                          </div>
+                          <div
+                            style={{
+                              background: "#f5f7fa",
+                              padding: "15px",
+                              borderRadius: "8px",
+                              border: "1px solid #d8dde0",
+                              lineHeight: "1.6",
+                              color: "#333",
+                              fontSize: "14px",
+                              whiteSpace: "pre-wrap",
+                              wordWrap: "break-word",
+                            }}
+                          >
+                            {value}
                           </div>
                         </div>
                       );
