@@ -1,6 +1,12 @@
+export interface Alert {
+  flag: boolean;
+  message: string;
+}
+
 export interface Option {
   value: number;
   text: string;
+  alert?: Alert | null;
 }
 
 export interface BranchRule {
@@ -19,6 +25,9 @@ export interface Question {
   responseType: string;
   mandatory: boolean;
   displayOrder: number;
+  parentQuestionCode?: string | null;
+  clinicalAlertCapable?: boolean;
+  notes?: string;
   options: Option[];
   branchRules: BranchRule[];
 }
@@ -26,4 +35,10 @@ export interface Question {
 export interface Questionnaire {
   questionnaireCode: string;
   questions: Question[];
+}
+
+export interface TriggeredAlert {
+  questionCode: string;
+  message: string;
+  optionValue: number;
 }

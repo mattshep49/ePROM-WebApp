@@ -7,13 +7,17 @@ import {
 import type {
   Questionnaire,
   Question,
+  TriggeredAlert,
 } from "../types/questionnaire";
+import { detectClinicalAlerts } from "../services/assessmentService";
+
 type AnswerValue = string | number;
 type Answers = Record<string, string | number>;
 
 type QuestionnaireState = {
   answers: Answers;
   visibleRequiredQuestionCodes: string[];
+  clinicalAlerts: TriggeredAlert[];
 };
 
 type Props = {
@@ -30,6 +34,9 @@ export default function QuestionnaireRenderer({
 }: Props) {
   const [answers, setAnswers] =
     useState<Answers>({});
+
+  const [alerts, setAlerts] =
+    useState<TriggeredAlert[]>([]);
 
   const [isLoaded, setIsLoaded] =
     useState(false);
@@ -179,6 +186,19 @@ export default function QuestionnaireRenderer({
   }, [questionnaire.questionnaireCode]);
 
   /*
+   * Detect clinical alerts based on current answers.
+   */
+  useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    const detectedAlerts =
+      detectClinicalAlerts(questionnaire, answers);
+    setAlerts(detectedAlerts);
+  }, [answers, isLoaded, questionnaire]);
+
+  /*
    * Save answers locally and report them to App.tsx.
    */
   useEffect(() => {
@@ -204,10 +224,12 @@ export default function QuestionnaireRenderer({
       {
         answers,
         visibleRequiredQuestionCodes,
+        clinicalAlerts: alerts,
       }
     );
   }, [
     answers,
+    alerts,
     isLoaded,
     questionnaire.questionnaireCode,
     visibleQuestions,
@@ -307,6 +329,48 @@ export default function QuestionnaireRenderer({
         </p>
       </header>
 
+      {alerts.length > 0 && (
+        <section
+          style={{
+            marginBottom: "28px",
+            padding: "16px 20px",
+            background: "#fee2e2",
+            border: "2px solid #dc2626",
+            borderRadius: "10px",
+          }}
+        >
+          <h2
+            style={{
+              margin: "0 0 12px",
+              color: "#991b1b",
+              fontSize: "18px",
+              fontWeight: 700,
+            }}
+          >
+            Clinical Alerts ({alerts.length})
+          </h2>
+          <ul
+            style={{
+              margin: 0,
+              paddingLeft: "20px",
+              color: "#7f1d1d",
+            }}
+          >
+            {alerts.map((alert, index) => (
+              <li
+                key={index}
+                style={{
+                  marginBottom: "8px",
+                  fontSize: "14px",
+                }}
+              >
+                {alert.message}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       {visibleQuestions.map(
         (question) => {
           const showSection =
@@ -338,6 +402,12 @@ export default function QuestionnaireRenderer({
           const isText =
             responseType === "text" ||
             scaleCode === "FREE_TEXT";
+
+          const questionAlert = alerts.find(
+            (alert) =>
+              alert.questionCode ===
+              question.questionCode
+          );
 
           return (
             <section
@@ -374,27 +444,59 @@ export default function QuestionnaireRenderer({
                 style={{
                   padding: "24px",
                   marginBottom: "20px",
-                  background: "#ffffff",
-                  border:
-                    "1px solid #d8dde0",
+                  background: questionAlert
+                    ? "#fef2f2"
+                    : "#ffffff",
+                  border: questionAlert
+                    ? "2px solid #dc2626"
+                    : "1px solid #d8dde0",
                   borderRadius: "14px",
                   boxShadow:
                     "0 2px 8px rgba(0, 0, 0, 0.08)",
                 }}
               >
-                <p
+                <div
                   style={{
-                    margin:
-                      "0 0 8px",
-                    color: "#4c6272",
-                    fontSize: "14px",
-                    fontWeight: 700,
+                    display: "flex",
+                    justifyContent:
+                      "space-between",
+                    alignItems: "flex-start",
+                    marginBottom: "8px",
                   }}
                 >
-                  {
-                    question.questionNumber
-                  }
-                </p>
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "#4c6272",
+                      fontSize: "14px",
+                      fontWeight: 700,
+                    }}
+                  >
+                    {
+                      question.questionNumber
+                    }
+                  </p>
+
+                  {questionAlert && (
+                    <span
+                      style={{
+                        padding:
+                          "4px 8px",
+                        background:
+                          "#dc2626",
+                        color: "#ffffff",
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        borderRadius:
+                          "4px",
+                        whiteSpace:
+                          "nowrap",
+                      }}
+                    >
+                      ⚠ ALERT
+                    </span>
+                  )}
+                </div>
 
                 <h3
                   style={{
@@ -409,6 +511,28 @@ export default function QuestionnaireRenderer({
                     question.questionText
                   }
                 </h3>
+
+                {questionAlert && (
+                  <div
+                    style={{
+                      marginBottom: "22px",
+                      padding: "12px 14px",
+                      background:
+                        "#fee2e2",
+                      border:
+                        "1px solid #fca5a5",
+                      borderRadius: "8px",
+                      color: "#991b1b",
+                      fontSize: "14px",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    <strong>
+                      ⚠ Clinical Alert:
+                    </strong>{" "}
+                    {questionAlert.message}
+                  </div>
+                )}
 
                 {isSlider ? (
                   <div>
