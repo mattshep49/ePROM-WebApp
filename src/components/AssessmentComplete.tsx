@@ -112,10 +112,21 @@ export default function AssessmentComplete({
           margin: "0 auto",
           background: "#ffffff",
           borderRadius: "16px",
-          padding: "40px",
+          padding: "0",
           boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+          display: "flex",
+          flexDirection: "column",
+          maxHeight: "90vh",
+          overflow: "hidden",
         }}
       >
+        <div
+          style={{
+            padding: "40px",
+            overflowY: "auto",
+            flex: 1,
+          }}
+        >
         <div
           style={{
             textAlign: "center",
@@ -451,6 +462,7 @@ export default function AssessmentComplete({
             responseLookup["COMMENTS"] ??
             "No comments provided"
           }
+        </div>
         </div>
       </div>
     </div>
