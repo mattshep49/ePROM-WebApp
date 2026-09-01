@@ -272,18 +272,24 @@ export default function QuestionnaireRenderer({
         fontFamily:
           "Arial, Helvetica, sans-serif",
         color: "#212b32",
+        display: "flex",
+        flexDirection: "column",
+        maxHeight: "90vh",
+        overflow: "hidden",
       }}
     >
       <header
         style={{
           padding: "28px",
-          marginBottom: "28px",
           color: "#ffffff",
           background:
             "linear-gradient(135deg, #005eb8 0%, #003d78 100%)",
           borderRadius: "14px",
           boxShadow:
             "0 4px 14px rgba(0, 0, 0, 0.14)",
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
         }}
       >
         <h1
@@ -329,16 +335,26 @@ export default function QuestionnaireRenderer({
         </p>
       </header>
 
-      {alerts.length > 0 && (
-        <section
-          style={{
-            marginBottom: "28px",
-            padding: "16px 20px",
-            background: "#fee2e2",
-            border: "2px solid #dc2626",
-            borderRadius: "10px",
-          }}
-        >
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          paddingTop: "28px",
+        }}
+      >
+        {alerts.length > 0 && (
+          <section
+            style={{
+              marginBottom: "28px",
+              padding: "16px 20px",
+              background: "#fee2e2",
+              border: "2px solid #dc2626",
+              borderRadius: "10px",
+              position: "sticky",
+              top: 0,
+              zIndex: 99,
+            }}
+          >
           <h2
             style={{
               margin: "0 0 12px",
@@ -368,10 +384,10 @@ export default function QuestionnaireRenderer({
               </li>
             ))}
           </ul>
-        </section>
-      )}
+          </section>
+        )}
 
-      {visibleQuestions.map(
+        {visibleQuestions.map(
         (question) => {
           const showSection =
             question.section !==
@@ -731,6 +747,7 @@ export default function QuestionnaireRenderer({
           );
         }
       )}
+      </div>
     </main>
   );
 }

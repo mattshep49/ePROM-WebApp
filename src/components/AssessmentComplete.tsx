@@ -103,34 +103,24 @@ export default function AssessmentComplete({
       style={{
         minHeight: "100vh",
         background: "#f5f7fa",
-        padding: "40px",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
+      {/* Fixed Header */}
       <div
         style={{
-          maxWidth: "1000px",
-          margin: "0 auto",
           background: "#ffffff",
-          borderRadius: "16px",
-          padding: "0",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-          display: "flex",
-          flexDirection: "column",
-          maxHeight: "90vh",
-          overflow: "hidden",
+          padding: "40px",
+          borderBottom: "1px solid #e5e7eb",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
         }}
       >
         <div
           style={{
-            padding: "40px",
-            overflowY: "auto",
-            flex: 1,
-          }}
-        >
-        <div
-          style={{
+            maxWidth: "1000px",
+            margin: "0 auto",
             textAlign: "center",
-            marginBottom: "40px",
           }}
         >
           <img
@@ -158,6 +148,23 @@ export default function AssessmentComplete({
             Thank you for completing your assessment. You can review your responses below. If you have any questions or need further assistance, please contact the oncology helpline. Responses where you indicated none or never are not displayed.
           </p>
         </div>
+      </div>
+
+      {/* Scrollable Content */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "40px",
+          background: "#f5f7fa",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: "1000px",
+            margin: "0 auto",
+          }}
+        >
 
         <h3 style={{ marginTop: "40px", marginBottom: "20px" }}>
           Submission Details
