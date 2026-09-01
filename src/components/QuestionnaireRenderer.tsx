@@ -372,17 +372,27 @@ export default function QuestionnaireRenderer({
               color: "#7f1d1d",
             }}
           >
-            {alerts.map((alert, index) => (
+            {alerts.map((alert, index) => {
+              const alertQuestion = questionnaire.questions.find(
+                (q) => q.questionCode === alert.questionCode
+              );
+              return (
               <li
                 key={index}
                 style={{
-                  marginBottom: "8px",
+                  marginBottom: "12px",
                   fontSize: "14px",
+                  lineHeight: "1.5",
                 }}
               >
-                {alert.message}
+                <strong style={{ color: "#991b1b" }}>
+                  {alertQuestion?.questionNumber}: {alertQuestion?.questionText}
+                </strong>
+                <br />
+                <span style={{ color: "#7f1d1d" }}>{alert.message}</span>
               </li>
-            ))}
+              );
+            })}
           </ul>
           </section>
         )}
