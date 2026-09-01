@@ -8,7 +8,7 @@ import { submitAssessment } from "./services/submissionService";
 
 import hdftLogo from "./assets/trustlogo.png";
 
-import type { Questionnaire } from "./types/questionnaire";
+import type { Questionnaire, TriggeredAlert } from "./types/questionnaire";
 
 type AnswerValue = string | number;
 type Answers = Record<string, AnswerValue>;
@@ -38,6 +38,7 @@ function App() {
   type QuestionnaireState = {
   answers: Answers;
   visibleRequiredQuestionCodes: string[];
+  clinicalAlerts: TriggeredAlert[];
 };
 
 const [questionnaireStates, setQuestionnaireStates] =

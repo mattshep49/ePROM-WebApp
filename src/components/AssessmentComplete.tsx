@@ -1,5 +1,6 @@
 import trustLogo from "../assets/trustlogo.png";
-import type { Questionnaire } from "../types/questionnaire";
+import { detectClinicalAlerts } from "../services/assessmentService";
+import type { Questionnaire, TriggeredAlert } from "../types/questionnaire";
 
 type ResponseItem = {
   questionCode: string;
@@ -73,6 +74,30 @@ export default function AssessmentComplete({
       .sort((a, b) => a.displayOrder - b.displayOrder),
   }));
 
+  // Detect all clinical alerts across all questionnaires
+  const allClinicalAlerts: Array<
+    TriggeredAlert & {
+      questionNumber: string;
+      questionText: string;
+    }
+  > = [];
+
+  questionnaires.forEach((questionnaire) => {
+    const alerts = detectClinicalAlerts(questionnaire, responseLookup);
+    alerts.forEach((alert) => {
+      const question = questionnaire.questions.find(
+        (q) => q.questionCode === alert.questionCode
+      );
+      if (question) {
+        allClinicalAlerts.push({
+          ...alert,
+          questionNumber: question.questionNumber,
+          questionText: question.questionText,
+        });
+      }
+    });
+  });
+
   return (
     <div
       style={{
@@ -134,6 +159,10 @@ export default function AssessmentComplete({
             borderRadius: "12px",
             marginBottom: "40px",
             border: "1px solid #e5e7eb",
+            position: "sticky",
+            top: "0",
+            zIndex: 99,
+            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
           }}
         >
           <p style={{ marginBottom: "15px" }}>
@@ -153,6 +182,57 @@ export default function AssessmentComplete({
             {submittedDate}
           </p>
         </div>
+
+        {allClinicalAlerts.length > 0 && (
+          <div
+            style={{
+              background: "#ffe5e5",
+              border: "2px solid #dc3545",
+              borderRadius: "12px",
+              padding: "25px",
+              marginBottom: "40px",
+              position: "sticky",
+              top: "20px",
+              zIndex: 100,
+              boxShadow: "0 4px 12px rgba(220, 53, 69, 0.2)",
+            }}
+          >
+            <h3
+              style={{
+                color: "#dc3545",
+                marginTop: "0",
+                marginBottom: "20px",
+                fontSize: "18px",
+              }}
+            >
+              Clinical Alerts ({allClinicalAlerts.length})
+            </h3>
+            <ul
+              style={{
+                margin: "0",
+                paddingLeft: "20px",
+                listStyle: "disc",
+              }}
+            >
+              {allClinicalAlerts.map((alert, index) => (
+                <li
+                  key={index}
+                  style={{
+                    marginBottom: "12px",
+                    lineHeight: "1.5",
+                    color: "#333",
+                  }}
+                >
+                  <strong style={{ color: "#dc3545" }}>
+                    {alert.questionNumber}: {alert.questionText}
+                  </strong>
+                  <br />
+                  <span style={{ color: "#666" }}>{alert.message}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {groupedQuestions.map((group) => {
           const hasResponses = group.questions.length > 0;

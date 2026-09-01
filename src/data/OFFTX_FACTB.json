@@ -10,26 +10,38 @@
       "responseType": "choice",
       "mandatory": true,
       "displayOrder": 1,
+      "clinicalAlertCapable": true,
       "options": [
         {
           "value": 4,
-          "text": "Very much"
+          "text": "Very much",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports severe lack of energy. Consider review of treatment or fatigue management plan."
+          }
         },
         {
           "value": 3,
-          "text": "Quite a bit"
+          "text": "Quite a bit",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports significant lack of energy. Monitor in follow-up appointments."
+          }
         },
         {
           "value": 2,
-          "text": "Somewhat"
+          "text": "Somewhat",
+          "alert": null
         },
         {
           "value": 1,
-          "text": "A little bit"
+          "text": "A little bit",
+          "alert": null
         },
         {
           "value": 0,
-          "text": "Not at all"
+          "text": "Not at all",
+          "alert": null
         }
       ],
       "branchRules": []
@@ -43,26 +55,38 @@
       "responseType": "choice",
       "mandatory": true,
       "displayOrder": 2,
+      "clinicalAlertCapable": true,
       "options": [
         {
           "value": 4,
-          "text": "Very much"
+          "text": "Very much",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports severe nausea. Recommend antiemetic review and consideration of dietary/supportive measures."
+          }
         },
         {
           "value": 3,
-          "text": "Quite a bit"
+          "text": "Quite a bit",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports significant nausea. Document and monitor symptom progression."
+          }
         },
         {
           "value": 2,
-          "text": "Somewhat"
+          "text": "Somewhat",
+          "alert": null
         },
         {
           "value": 1,
-          "text": "A little bit"
+          "text": "A little bit",
+          "alert": null
         },
         {
           "value": 0,
-          "text": "Not at all"
+          "text": "Not at all",
+          "alert": null
         }
       ],
       "branchRules": []
@@ -109,26 +133,38 @@
       "responseType": "choice",
       "mandatory": true,
       "displayOrder": 4,
+      "clinicalAlertCapable": true,
       "options": [
         {
           "value": 4,
-          "text": "Very much"
+          "text": "Very much",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports severe pain. Urgent review of pain management strategy recommended. Consider specialist referral if needed."
+          }
         },
         {
           "value": 3,
-          "text": "Quite a bit"
+          "text": "Quite a bit",
+          "alert": {
+            "flag": true,
+            "message": "Patient reports moderate to significant pain. Review current pain management and consider optimization."
+          }
         },
         {
           "value": 2,
-          "text": "Somewhat"
+          "text": "Somewhat",
+          "alert": null
         },
         {
           "value": 1,
-          "text": "A little bit"
+          "text": "A little bit",
+          "alert": null
         },
         {
           "value": 0,
-          "text": "Not at all"
+          "text": "Not at all",
+          "alert": null
         }
       ],
       "branchRules": []
