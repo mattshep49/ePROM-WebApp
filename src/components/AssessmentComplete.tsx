@@ -98,6 +98,30 @@ export default function AssessmentComplete({
     });
   });
 
+  // Helper function to get response text from option
+  const getResponseText = (questionCode: string): string => {
+    const value = responseLookup[questionCode];
+    if (!value) return "";
+    
+    // Find the question to get its options
+    for (const questionnaire of questionnaires) {
+      const question = questionnaire.questions.find(
+        (q) => q.questionCode === questionCode
+      );
+      if (question && question.options) {
+        const selectedOption = question.options.find(
+          (opt) => opt.value === value
+        );
+        if (selectedOption) {
+          return selectedOption.text;
+        }
+      }
+    }
+    
+    // If no option text found, return the raw value
+    return String(value);
+  };
+
   return (
     <div
       style={{
@@ -244,6 +268,10 @@ export default function AssessmentComplete({
                   <strong style={{ color: "#dc3545" }}>
                     {alert.questionNumber}: {alert.questionText}
                   </strong>
+                  <br />
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    <strong>Response:</strong> {getResponseText(alert.questionCode)}
+                  </span>
                   <br />
                   <span style={{ color: "#666" }}>{alert.message}</span>
                 </li>
@@ -465,6 +493,7 @@ export default function AssessmentComplete({
           }}
         >
           {
+            responseLookup["ONTX_23"] ??
             responseLookup["ONTX_COMMENTS"] ??
             responseLookup["COMMENTS"] ??
             "No comments provided"
