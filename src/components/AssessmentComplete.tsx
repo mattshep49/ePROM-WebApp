@@ -101,16 +101,17 @@ export default function AssessmentComplete({
   // Helper function to get response text from option
   const getResponseText = (questionCode: string): string => {
     const value = responseLookup[questionCode];
-    if (!value) return "";
+    if (value === undefined || value === null || value === "") return "";
     
     // Find the question to get its options
     for (const questionnaire of questionnaires) {
       const question = questionnaire.questions.find(
         (q) => q.questionCode === questionCode
       );
-      if (question && question.options) {
+      if (question && question.options && question.options.length > 0) {
+        // Compare both as strings and numbers to handle type mismatches
         const selectedOption = question.options.find(
-          (opt) => opt.value === value
+          (opt) => opt.value === value || String(opt.value) === String(value)
         );
         if (selectedOption) {
           return selectedOption.text;
