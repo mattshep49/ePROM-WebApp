@@ -208,8 +208,7 @@ const missingQuestionCodes =
       setSubmissionError(null);
 
       await submitAssessment(payload);
-
-      localStorage.removeItem("eprom-assessment");
+      // Cache clearing is now handled in submitAssessment()
 
       setSubmissionPayload(payload);
     } catch (error) {

@@ -1,3 +1,32 @@
+/**
+ * Clear all browser caches and storage to prevent stale data on subsequent visits
+ */
+function clearBrowserCache() {
+  // Clear localStorage
+  localStorage.clear();
+
+  // Clear sessionStorage
+  sessionStorage.clear();
+
+  // Clear IndexedDB if available
+  if (typeof indexedDB !== "undefined") {
+    indexedDB.databases?.().then((databases) => {
+      databases.forEach((db) => {
+        indexedDB.deleteDatabase(db.name);
+      });
+    });
+  }
+
+  // Clear Service Worker cache if available
+  if ("caches" in window) {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        caches.delete(cacheName);
+      });
+    });
+  }
+}
+
 export async function submitAssessment(
   payload: unknown
 ) {
@@ -7,6 +36,10 @@ export async function submitAssessment(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        // Prevent caching of the response
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+        "Pragma": "no-cache",
+        "Expires": "0",
       },
       body: JSON.stringify(payload),
     }
@@ -15,6 +48,9 @@ export async function submitAssessment(
   if (!response.ok) {
     throw new Error("Submission failed");
   }
+
+  // Clear all caches after successful submission
+  clearBrowserCache();
 
   return await response.json();
 }
