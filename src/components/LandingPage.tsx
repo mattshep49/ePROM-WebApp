@@ -11,51 +11,21 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const animationRef = useRef<number>();
 
   useEffect(() => {
-    // Load Dancing Script font from Google Fonts
-    const link = document.createElement("link");
-    link.href = "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap";
-    link.rel = "stylesheet";
-    document.head.appendChild(link);
-
-    return () => {
-      document.head.removeChild(link);
-    };
-  }, []);
-
-  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Wait for Dancing Script font to load
-    const loadFont = async () => {
-      try {
-        // Wait a bit for font to be loaded via CSS
-        await new Promise(resolve => setTimeout(resolve, 500));
-        await document.fonts.load('700 48px "Dancing Script"');
-      } catch (e) {
-        console.warn("Font loading completed or skipped");
-      }
-    };
+    // Set canvas size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    const startAnimation = async () => {
-      await loadFont();
+    // Animation parameters
+    const startTime = Date.now();
+    const animationDuration = 8000; // 8 seconds for animation
 
-      // Set canvas size
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      // Animation parameters
-      const startTime = Date.now();
-      const animationDuration = 8000; // 8 seconds for animation
-      const totalDuration = 10000; // 10 seconds total
-
-      // Text to animate
-      const text = "Digital Opportunities Team @ HDFT";
-      const dotText = "DOT";
-
+    // Text to animate
     // Ladybird shape and position
     interface LadybirdState {
       x: number;
@@ -141,8 +111,8 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       const textX = centerX - 350;
       const textY = centerY + 100;
 
-      // Set up font - Dancing Script for text
-        ctx!.font = '700 48px "Dancing Script", cursive';
+      // Set up font - using system cursive font
+      ctx!.font = 'bold italic 48px Brush Script MT, cursive';
       ctx!.fillStyle = "#ffffff";
       ctx!.textAlign = "left";
       ctx!.textBaseline = "top";
@@ -197,7 +167,7 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       // Draw DOT text after animation
       if (progress > 0.6) {
         ctx!.fillStyle = "#ffffff";
-        ctx!.font = '700 56px "Dancing Script", cursive';
+        ctx!.font = 'bold italic 56px Brush Script MT, cursive';
         ctx!.textAlign = "center";
         ctx!.textBaseline = "middle";
         const dotX = centerX + 80;
@@ -214,18 +184,22 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       }
     };
 
-      animationRef.current = requestAnimationFrame(animate);
+    animationRef.current = requestAnimationFrame(animate);
 
-      // Handle window resize
-      const handleResize = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      };
-
-      window.addEventListener("resize", handleResize);
+    // Handle window resize
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     };
 
-    startAnimation();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      window.removeEventListener("resize", handleResize);
+    };
   }, [onComplete]);
 
   return (
