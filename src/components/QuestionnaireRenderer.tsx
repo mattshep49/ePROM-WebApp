@@ -41,6 +41,12 @@ export default function QuestionnaireRenderer({
   const [isLoaded, setIsLoaded] =
     useState(false);
 
+  const [showEmptyTextConfirmation, setShowEmptyTextConfirmation] =
+    useState(false);
+
+  const [emptyTextQuestions, setEmptyTextQuestions] =
+    useState<Question[]>([]);
+
   /*
    * Keep the latest callback without causing the answer effect
    * to rerun whenever App.tsx renders.
@@ -245,6 +251,66 @@ export default function QuestionnaireRenderer({
     }));
   };
 
+  const checkEmptyFreeTextQuestions = (): Question[] => {
+    return visibleQuestions.filter((question) => {
+      const responseType = question.responseType
+        .trim()
+        .toLowerCase();
+      const scaleCode = question.scaleCode
+        .trim()
+        .toUpperCase();
+      const isText =
+        responseType === "text" ||
+        scaleCode === "FREE_TEXT";
+
+      if (!isText) {
+        return false;
+      }
+
+      const answer = answers[question.questionCode];
+      return answer === undefined || answer === "";
+    });
+  };
+
+  const handleConfirmEmpty = () => {
+    const updatedAnswers = { ...answers };
+    emptyTextQuestions.forEach((question) => {
+      updatedAnswers[question.questionCode] =
+        "empty-confirmed";
+    });
+    setAnswers(updatedAnswers);
+    setShowEmptyTextConfirmation(false);
+  };
+
+  const handleSubmit = () => {
+    const emptyQuestions =
+      checkEmptyFreeTextQuestions();
+
+    if (emptyQuestions.length > 0) {
+      setEmptyTextQuestions(emptyQuestions);
+      setShowEmptyTextConfirmation(true);
+    } else {
+      // Proceed with submission
+      onAnswersChangeRef.current(
+        questionnaire.questionnaireCode,
+        {
+          answers,
+          visibleRequiredQuestionCodes:
+            visibleQuestions
+              .filter(
+                (question) =>
+                  question.mandatory
+              )
+              .map(
+                (question) =>
+                  question.questionCode
+              ),
+          clinicalAlerts: alerts,
+        }
+      );
+    }
+  };
+
   const answeredVisibleQuestions =
     visibleQuestions.filter(
       (question) =>
@@ -353,7 +419,7 @@ export default function QuestionnaireRenderer({
               position: "sticky",
               top: 0,
               zIndex: 99,
-              maxHeight: "35vh",
+              maxHeight: "17.5vh",
               overflowY: "auto",
             }}
           >
@@ -772,7 +838,191 @@ export default function QuestionnaireRenderer({
           );
         }
       )}
+
+      <div
+        style={{
+          padding: "20px 28px",
+          display: "flex",
+          justifyContent: "center",
+          borderTop: "1px solid #d8dde0",
+          background: "#ffffff",
+        }}
+      >
+        <button
+          onClick={handleSubmit}
+          style={{
+            padding: "12px 32px",
+            background:
+              "linear-gradient(135deg, #005eb8 0%, #003d78 100%)",
+            color: "#ffffff",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "16px",
+            fontWeight: 600,
+            cursor: "pointer",
+            boxShadow:
+              "0 2px 8px rgba(0, 0, 0, 0.15)",
+            transition: "all 200ms ease",
+          }}
+          onMouseOver={(e) => {
+            e.currentTarget.style.boxShadow =
+              "0 4px 12px rgba(0, 0, 0, 0.2)";
+          }}
+          onMouseOut={(e) => {
+            e.currentTarget.style.boxShadow =
+              "0 2px 8px rgba(0, 0, 0, 0.15)";
+          }}
+        >
+          Submit
+        </button>
       </div>
+      </div>
+
+      {showEmptyTextConfirmation && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              background: "#ffffff",
+              borderRadius: "14px",
+              padding: "28px",
+              maxWidth: "500px",
+              width: "90%",
+              boxShadow:
+                "0 10px 40px rgba(0, 0, 0, 0.3)",
+            }}
+          >
+            <h2
+              style={{
+                margin: "0 0 16px",
+                color: "#212b32",
+                fontSize: "20px",
+                fontWeight: 700,
+              }}
+            >
+              Confirm Empty Responses
+            </h2>
+
+            <p
+              style={{
+                margin: "0 0 16px",
+                color: "#4c6272",
+                fontSize: "14px",
+                lineHeight: 1.6,
+              }}
+            >
+              The following free text questions
+              are empty:
+            </p>
+
+            <ul
+              style={{
+                margin: "0 0 20px",
+                paddingLeft: "20px",
+                color: "#4c6272",
+                fontSize: "14px",
+              }}
+            >
+              {emptyTextQuestions.map(
+                (question) => (
+                  <li key={question.questionCode}>
+                    {question.questionNumber}:{" "}
+                    {question.questionText}
+                  </li>
+                )
+              )}
+            </ul>
+
+            <p
+              style={{
+                margin: "0 0 24px",
+                color: "#4c6272",
+                fontSize: "14px",
+                lineHeight: 1.6,
+                fontWeight: 600,
+              }}
+            >
+              Do you want to proceed without
+              entering any text for these
+              questions?
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                onClick={() =>
+                  setShowEmptyTextConfirmation(
+                    false
+                  )
+                }
+                style={{
+                  padding: "10px 24px",
+                  background: "#ffffff",
+                  color: "#005eb8",
+                  border: "2px solid #005eb8",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 200ms ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    "#f0f7ff";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background =
+                    "#ffffff";
+                }}
+              >
+                Edit Responses
+              </button>
+
+              <button
+                onClick={handleConfirmEmpty}
+                style={{
+                  padding: "10px 24px",
+                  background: "#005eb8",
+                  color: "#ffffff",
+                  border: "none",
+                  borderRadius: "8px",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  transition: "all 200ms ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.background =
+                    "#003d78";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.background =
+                    "#005eb8";
+                }}
+              >
+                Confirm & Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
