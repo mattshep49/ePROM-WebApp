@@ -2,6 +2,8 @@ import {
   useEffect,
   useRef,
   useState,
+  forwardRef,
+  useImperativeHandle,
 } from "react";
 
 import type {
@@ -26,12 +28,13 @@ type Props = {
     questionnaireCode: string,
     state: QuestionnaireState
   ) => void;
+  onCheckEmptyText?: (emptyQuestions: Question[]) => void;
 };
 
-export default function QuestionnaireRenderer({
-  questionnaire,
-  onAnswersChange,
-}: Props) {
+export default forwardRef(function QuestionnaireRenderer(
+  { questionnaire, onAnswersChange, onCheckEmptyText }: Props,
+  ref
+) {
   const [answers, setAnswers] =
     useState<Answers>({});
 
@@ -53,6 +56,19 @@ export default function QuestionnaireRenderer({
    */
   const onAnswersChangeRef =
     useRef(onAnswersChange);
+
+  useImperativeHandle(ref, () => ({
+    validateEmptyText: () => {
+      const emptyQuestions =
+        checkEmptyFreeTextQuestions();
+      if (emptyQuestions.length > 0) {
+        setEmptyTextQuestions(emptyQuestions);
+        setShowEmptyTextConfirmation(true);
+        return false;
+      }
+      return true;
+    },
+  }));
 
   const evaluateRule = (
     answer: number,
@@ -280,34 +296,10 @@ export default function QuestionnaireRenderer({
     });
     setAnswers(updatedAnswers);
     setShowEmptyTextConfirmation(false);
-  };
-
-  const handleSubmit = () => {
-    const emptyQuestions =
-      checkEmptyFreeTextQuestions();
-
-    if (emptyQuestions.length > 0) {
-      setEmptyTextQuestions(emptyQuestions);
-      setShowEmptyTextConfirmation(true);
-    } else {
-      // Proceed with submission
-      onAnswersChangeRef.current(
-        questionnaire.questionnaireCode,
-        {
-          answers,
-          visibleRequiredQuestionCodes:
-            visibleQuestions
-              .filter(
-                (question) =>
-                  question.mandatory
-              )
-              .map(
-                (question) =>
-                  question.questionCode
-              ),
-          clinicalAlerts: alerts,
-        }
-      );
+    
+    // Call parent callback if provided
+    if (onCheckEmptyText) {
+      onCheckEmptyText(emptyTextQuestions);
     }
   };
 
@@ -838,44 +830,6 @@ export default function QuestionnaireRenderer({
           );
         }
       )}
-
-      <div
-        style={{
-          padding: "20px 28px",
-          display: "flex",
-          justifyContent: "center",
-          borderTop: "1px solid #d8dde0",
-          background: "#ffffff",
-        }}
-      >
-        <button
-          onClick={handleSubmit}
-          style={{
-            padding: "12px 32px",
-            background:
-              "linear-gradient(135deg, #005eb8 0%, #003d78 100%)",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "16px",
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow:
-              "0 2px 8px rgba(0, 0, 0, 0.15)",
-            transition: "all 200ms ease",
-          }}
-          onMouseOver={(e) => {
-            e.currentTarget.style.boxShadow =
-              "0 4px 12px rgba(0, 0, 0, 0.2)";
-          }}
-          onMouseOut={(e) => {
-            e.currentTarget.style.boxShadow =
-              "0 2px 8px rgba(0, 0, 0, 0.15)";
-          }}
-        >
-          Submit
-        </button>
-      </div>
       </div>
 
       {showEmptyTextConfirmation && (
@@ -1025,4 +979,4 @@ export default function QuestionnaireRenderer({
       )}
     </main>
   );
-}
+});
