@@ -1,207 +1,605 @@
 import { useEffect, useRef } from "react";
-import trustLogo from "../assets/trustlogo.png";
 
 type LandingPageProps = {
   email: string;
   onComplete: () => void;
 };
 
-export default function LandingPage({ email, onComplete }: LandingPageProps) {
-  const ladybirdRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
+const INK_PATH = "M55 108 C245 95 410 112 555 102 C720 91 875 111 1050 101";
+const WORDMARK_TEXT = "Digital Opportunities Team @ HDFT";
+
+export default function LandingPage({ onComplete }: LandingPageProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const introRef = useRef<HTMLDivElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const bugRef = useRef<HTMLDivElement>(null);
+  const logoBugRef = useRef<HTMLDivElement>(null);
+  const inkPathRef = useRef<SVGPathElement>(null);
+  const revealRectRef = useRef<SVGRectElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
+  let lastParticle = 0;
+
+  const createParticle = (x: number, y: number) => {
+    if (!stageRef.current) return;
+    const particle = document.createElement("div");
+    const size = (3 + Math.random() * 5) + "px";
+    const dx = -15 + Math.random() * 30;
+    const dy = -25 - Math.random() * 25;
+    
+    particle.style.cssText = `
+      position: absolute;
+      left: ${x}px;
+      top: ${y}px;
+      width: ${size};
+      height: ${size};
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff 0 20%, #41c7ed 30% 55%, transparent 72%);
+      box-shadow: 0 0 9px #41c7ed;
+      pointer-events: none;
+      --dx: ${dx}px;
+      --dy: ${dy}px;
+    `;
+    
+    stageRef.current!.appendChild(particle);
+    particle.animate([
+      { opacity: "0", transform: "scale(0.25)" },
+      { opacity: "1", offset: 0.2 },
+      { opacity: "0", transform: `translate(var(--dx), var(--dy)) scale(1.15)` }
+    ], { duration: 900, easing: "ease-out" });
+    
+    setTimeout(() => particle.remove(), 900);
+  };
 
   useEffect(() => {
-    const ladybird = ladybirdRef.current;
-    const path = pathRef.current;
-    const svg = svgRef.current;
-    if (!ladybird || !path || !svg) return;
+    const duration = 8600;
+    const delay = 600;
+    let start: number | null = null;
 
-    const pathLength = path.getTotalLength();
-    let startTime: number | null = null;
-    const animationDuration = 8000; // 8 seconds
+    const placeBug = (t: number) => {
+      if (!start) start = t;
+      const elapsed = t - start;
+      const p = Math.max(0, Math.min(1, (elapsed - delay) / duration));
 
-    function animate(timestamp: number) {
-      if (startTime === null) startTime = timestamp;
-      let progress = (timestamp - startTime) / animationDuration;
-      if (progress > 1) progress = 1;
+      if (!inkPathRef.current || !svgRef.current || !bugRef.current || !revealRectRef.current) return;
 
-      // Get SVG bounding box to transform viewBox coordinates to screen coordinates
-      const svgRect = svg!.getBoundingClientRect();
-      const viewBox = svg!.viewBox.baseVal;
+      const len = inkPathRef.current.getTotalLength();
+      const pt = inkPathRef.current.getPointAtLength(len * p);
+      const next = inkPathRef.current.getPointAtLength(Math.min(len, len * p + 2));
+
+      const svg = svgRef.current;
+      const r = svg.getBoundingClientRect();
+      const vb = svg.viewBox.baseVal;
       
-      // Calculate scale factors
-      const scaleX = svgRect.width / viewBox.width;
-      const scaleY = svgRect.height / viewBox.height;
+      const x = ((pt.x - vb.x) / vb.width) * r.width;
+      const y = ((pt.y - vb.y) / vb.height) * r.height;
 
-      // Get point along the path
-      const distance = pathLength * progress;
-      const point = path!.getPointAtLength(distance);
+      // Update reveal rectangle width (1106 is SVG viewBox width)
+      revealRectRef.current.setAttribute("width", String(1106 * p));
 
-      // Get next point for angle calculation
-      const nextDistance = Math.min(distance + 10, pathLength);
-      const nextPoint = path!.getPointAtLength(nextDistance);
+      bugRef.current.style.left = x + "px";
+      bugRef.current.style.top = y + "px";
+      bugRef.current.style.rotate = (Math.atan2(next.y - pt.y, next.x - pt.x) * (180 / Math.PI) + 90) + "deg";
 
-      // Calculate angle
-      const angle =
-        Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) *
-        (180 / Math.PI);
-
-      // Transform viewBox coordinates to screen coordinates
-      const screenX = svgRect.left + point.x * scaleX;
-      const screenY = svgRect.top + point.y * scaleY;
-
-      // Position and rotate ladybird
-      ladybird!.style.left = screenX + "px";
-      ladybird!.style.top = screenY + "px";
-      ladybird!.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
-
-      if (progress < 1) {
-        animationRef.current = requestAnimationFrame(animate);
-      } else {
-        // Animation complete, transition after 2 seconds
-        setTimeout(onComplete, 2000);
+      if (elapsed > delay && t - lastParticle > 85 && p < 1) {
+        createParticle(r.left + x, r.top + y);
+        lastParticle = t;
       }
-    }
 
-    animationRef.current = requestAnimationFrame(animate);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
+      if (p < 1) {
+        animationRef.current = requestAnimationFrame(placeBug);
+      } else {
+        // Transition to logo phase
+        if (containerRef.current) {
+          setTimeout(() => {
+            if (containerRef.current) {
+              containerRef.current.classList.add("logo");
+            }
+          }, 1400);
+        }
       }
     };
-  }, [onComplete]);
+
+    animationRef.current = requestAnimationFrame(placeBug);
+    return () => {
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    };
+  }, []);
+
+  const handleComplete = () => {
+    if (containerRef.current) {
+      containerRef.current.classList.add("leaving");
+    }
+    setTimeout(onComplete, 650);
+  };
 
   return (
     <div
+      ref={containerRef}
+      className="landing"
       style={{
-        position: "relative",
-        width: "100%",
-        height: "100vh",
+        position: "fixed",
+        inset: 0,
+        isolation: "isolate",
         overflow: "hidden",
-        background: "#003f87",
+        display: "grid",
+        gridTemplateRows: "auto 1fr auto",
+        color: "#fff",
+        background: `radial-gradient(circle at 75% 22%, rgb(65 199 237 / 0.28), transparent 28rem),
+                     radial-gradient(circle at 12% 78%, rgb(127 228 244 / 0.18), transparent 30rem),
+                     linear-gradient(145deg, #002f5f, #005eb8 52%, #0879c9)`,
+        transition: "opacity 0.65s, transform 0.65s, visibility 0.65s",
+        zIndex: 1000,
       }}
     >
-      {/* Welcome text at top */}
+      {/* Grid background */}
       <div
         style={{
           position: "absolute",
-          top: "2%",
-          left: "50%",
-          transform: "translateX(-50%)",
-          textAlign: "center",
-          color: "white",
-          zIndex: 10,
-          width: "90%",
+          inset: 0,
+          zIndex: -2,
+          opacity: 0.16,
+          backgroundImage: `linear-gradient(rgb(255 255 255 / 0.15) 1px, transparent 1px),
+                            linear-gradient(90deg, rgb(255 255 255 / 0.15) 1px, transparent 1px)`,
+          backgroundSize: "64px 64px",
+          maskImage: "linear-gradient(transparent, #000 25%, #000 70%, transparent)",
         }}
-      >
-        <h1
-          style={{
-            margin: 0,
-            fontSize: "28px",
-            fontWeight: 700,
-            lineHeight: 1.3,
-            marginBottom: "8px",
-          }}
-        >
-          Welcome {email}
-        </h1>
-        <p
-          style={{
-            margin: 0,
-            fontSize: "16px",
-            fontWeight: 400,
-            lineHeight: 1.5,
-            opacity: 0.95,
-          }}
-        >
-          to your Oncology Health and Treatment Questionnaire
-        </p>
-      </div>
+      />
 
-      {/* SVG with animated text path */}
-      <svg
-        ref={svgRef}
+      {/* Glowing orbs */}
+      <span
         style={{
           position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "90%",
-          maxWidth: "1200px",
-          height: "auto",
-          zIndex: 3,
+          width: "18rem",
+          height: "18rem",
+          top: "8%",
+          left: "7%",
+          borderRadius: "50%",
+          background: "rgb(65 199 237 / 0.45)",
+          filter: "blur(10px)",
+          opacity: 0.35,
+          animation: "float 9s ease-in-out infinite",
+          pointerEvents: "none",
         }}
-        viewBox="0 0 1105.765 85"
-      >
-        {/* Animated writing path */}
-        <path
-          ref={pathRef}
-          d="M 867.68 62.135 L 868.19 62.815 Q 864.96 66.47 860.115 68.978 Q 855.27 71.485 848.98 71.485 Q 842.605 71.485 838.61 68.935 Q 834.615 66.385 832.745 62.305 Q 830.875 58.225 830.875 53.72 Q 830.875 48.875 832.83 44.2 Q 834.785 39.525 838.398 35.785 Q 842.01 32.045 846.983 29.835 Q 851.955 27.625 857.99 27.625 Q 864.195 27.625 868.148 29.878 Q 872.1 32.13 874.013 35.658 Q 875.925 39.185 875.925 43.01 Q 875.925 46.155 874.778 49.215 Q 873.63 52.275 871.59 54.825 Q 869.55 57.375 866.873 58.905 Q 864.195 60.435 861.135 60.435 Q 858.33 60.435 857.013 59.075 Q 855.695 57.715 855.695 55.42 Q 855.695 54.91 855.738 54.528 Q 855.78 54.145 855.865 53.72 Q 852.975 57.63 850.128 59.628 Q 847.28 61.625 844.73 61.625 Q 842.605 61.625 841.16 60.223 Q 839.715 58.82 839.715 56.015 Q 839.715 52.955 841.373 49.343 Q 843.03 45.73 845.835 42.5 Q 848.64 39.27 851.955 37.188 Q 855.27 35.105 858.585 35.105 Q 861.22 35.105 863.005 36.508 Q 864.79 37.91 864.79 40.205 Q 864.79 41.31 864.365 41.948 Q 863.94 42.585 863.175 42.84 Q 862.41 43.095 861.39 43.095 Q 861.56 42.585 861.645 41.948 Q 861.73 41.31 861.73 40.8 Q 861.73 39.185 861.008 38.08 Q 860.285 36.975 858.5 36.975 Q 856.12 36.975 853.613 39.015 Q 851.105 41.055 849.023 44.115 Q 846.94 47.175 845.665 50.405 Q 844.39 53.635 844.39 56.1 Q 844.39 57.545 844.9 58.183 Q 845.41 58.82 846.26 58.82 Q 847.875 58.82 849.83 57.248 Q 851.785 55.675 853.783 53.253 Q 855.78 50.83 857.523 48.323 Q 859.265 45.815 860.54 44.03 Q 861.22 44.115 862.24 44.54 Q 863.26 44.965 863.26 45.73 Q 863.26 46.495 862.283 48.11 Q 861.305 49.725 860.328 51.638 Q 859.35 53.55 859.35 55.335 Q 859.35 56.185 859.86 57.163 Q 860.37 58.14 862.24 58.14 Q 864.96 58.14 867.468 55.973 Q 869.975 53.805 871.59 50.448 Q 873.205 47.09 873.205 43.52 Q 873.205 40.29 871.633 37.23 Q 870.06 34.17 866.745 32.173 Q 863.43 30.175 857.99 30.175 Q 852.55 30.175 848.13 32.258 Q 843.71 34.34 840.523 37.825 Q 837.335 41.31 835.635 45.518 Q 833.935 49.725 833.935 54.06 Q 833.935 57.885 835.465 61.37 Q 836.995 64.855 840.438 67.108 Q 843.88 69.36 849.49 69.36 Q 853.995 69.36 858.713 67.618 Q 863.43 65.875 867.68 62.135 Z M 9.095 68.595 Q 6.46 68.595 4.08 67.873 Q 1.7 67.15 0 64.77 Q 0.85 60.69 2.083 55.973 Q 3.315 51.255 4.76 46.283 Q 6.205 41.31 7.693 36.508 Q 9.18 31.705 10.54 27.54 Q 11.9 23.375 13.005 20.23 Q 14.11 17.085 14.705 15.47 Q 14.96 14.79 15.555 13.473 Q 16.15 12.155 17 10.795 Q 17.85 9.435 18.955 8.458 Q 20.06 7.48 21.335 7.48 Q 22.525 7.48 23.715 8.33 Q 21.08 14.45 18.403 21.845 Q 15.725 29.24 13.26 37.103 Q 10.795 44.965 8.755 52.445 Q 6.715 59.925 5.355 66.045 Q 6.545 66.215 7.353 66.3 Q 8.16 66.385 9.01 66.385 Q 14.45 66.385 19.508 63.878 Q 24.565 61.37 28.943 56.993 Q 33.32 52.615 36.635 46.963 Q 39.95 41.31 41.778 34.978 Q 43.605 28.645 43.605 22.355 Q 43.605 15.47 41.395 11.008 Q 39.185 6.545 35.275 4.42 Q 31.365 2.295 26.18 2.295 Q 20.655 2.295 16.235 4.505 Q 11.815 6.715 9.265 10.455 Q 6.715 14.195 6.715 18.87 Q 6.715 19.89 6.843 20.655 Q 6.97 21.42 7.14 22.015 Q 4.335 22.015 3.188 20.613 Q 2.04 19.21 2.04 17.255 Q 2.04 14.28 4.123 11.263 Q 6.205 8.245 9.903 5.695 Q 13.6 3.145 18.445 1.573 Q 23.29 0 28.73 0 Q 36.38 0 41.013 3.103 Q 45.645 6.205 47.77 11.475 Q 49.895 16.745 49.895 23.29 Q 49.895 30.685 47.6 37.443 Q 45.305 44.2 41.268 49.853 Q 37.23 55.505 32.045 59.713 Q 26.86 63.92 20.953 66.258 Q 15.045 68.595 9.095 68.595 Z M 967.47 68.595 Q 964.835 68.595 962.455 67.873 Q 960.075 67.15 958.375 64.77 Q 959.225 60.69 960.458 55.973 Q 961.69 51.255 963.135 46.283 Q 964.58 41.31 966.068 36.508 Q 967.555 31.705 968.915 27.54 Q 970.275 23.375 971.38 20.23 Q 972.485 17.085 973.08 15.47 Q 973.335 14.79 973.93 13.473 Q 974.525 12.155 975.375 10.795 Q 976.225 9.435 977.33 8.458 Q 978.435 7.48 979.71 7.48 Q 980.9 7.48 982.09 8.33 Q 979.455 14.45 976.778 21.845 Q 974.1 29.24 971.635 37.103 Q 969.17 44.965 967.13 52.445 Q 965.09 59.925 963.73 66.045 Q 964.92 66.215 965.728 66.3 Q 966.535 66.385 967.385 66.385 Q 972.825 66.385 977.883 63.878 Q 982.94 61.37 987.318 56.993 Q 991.695 52.615 995.01 46.963 Q 998.325 41.31 1000.153 34.978 Q 1001.98 28.645 1001.98 22.355 Q 1001.98 15.47 999.77 11.008 Q 997.56 6.545 993.65 4.42 Q 989.74 2.295 984.555 2.295 Q 979.03 2.295 974.61 4.505 Q 970.19 6.715 967.64 10.455 Q 965.09 14.195 965.09 18.87 Q 965.09 19.89 965.218 20.655 Q 965.345 21.42 965.515 22.015 Q 962.71 22.015 961.563 20.613 Q 960.415 19.21 960.415 17.255 Q 960.415 14.28 962.498 11.263 Q 964.58 8.245 968.278 5.695 Q 971.975 3.145 976.82 1.573 Q 981.665 0 987.105 0 Q 994.755 0 999.388 3.103 Q 1004.02 6.205 1006.145 11.475 Q 1008.27 16.745 1008.27 23.29 Q 1008.27 30.685 1005.975 37.443 Q 1003.68 44.2 999.643 49.853 Q 995.605 55.505 990.42 59.713 Q 985.235 63.92 979.328 66.258 Q 973.42 68.595 967.47 68.595 Z"
-          stroke="white"
-          strokeWidth="3"
-          fill="none"
-          strokeDasharray="2000"
-          style={{
-            strokeDashoffset: 2000,
-            animation: "writeText 6s linear forwards",
-          }}
-        />
-      </svg>
-
-      {/* Ladybird that follows the path */}
-      <div
-        ref={ladybirdRef}
+      />
+      <span
         style={{
           position: "absolute",
-          width: "40px",
-          height: "40px",
+          width: "25rem",
+          height: "25rem",
+          right: "2%",
+          bottom: "3%",
+          borderRadius: "50%",
+          background: "rgb(255 255 255 / 0.16)",
+          filter: "blur(10px)",
+          opacity: 0.35,
+          animation: "float 9s ease-in-out infinite",
+          animationDelay: "-3s",
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Header */}
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem",
+          padding: "clamp(1.2rem, 3vw, 2.5rem) clamp(1.2rem, 5vw, 5rem)",
           zIndex: 5,
-          fontSize: "40px",
-          lineHeight: "1",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
         }}
       >
-        🐞
-      </div>
-
-      {/* Trust logo at bottom */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: "2%",
-          left: 0,
-          right: 0,
-          width: "100%",
-          height: "auto",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          zIndex: 20,
-        }}
-      >
-        <img
-          src={trustLogo}
-          alt="Team HDFT - Harrogate and District NHS Foundation Trust"
+        <div
           style={{
-            maxWidth: "90%",
-            height: "auto",
-            maxHeight: "100px",
+            color: "rgb(255 255 255 / 0.82)",
+            fontSize: "clamp(0.72rem, 1.2vw, 0.95rem)",
+            fontWeight: 650,
+            letterSpacing: "0.045em",
+            textTransform: "uppercase",
+          }}
+        >
+          Harrogate and District NHS Foundation Trust
+        </div>
+        <button
+          onClick={handleComplete}
+          style={{
+            border: "1px solid rgb(255 255 255 / 0.38)",
+            padding: "0.68rem 1rem",
+            borderRadius: "999px",
+            color: "#fff",
+            background: "rgb(0 28 53 / 0.2)",
+            backdropFilter: "blur(8px)",
+            cursor: "pointer",
+            fontSize: "inherit",
+            fontWeight: 600,
+            transition: "0.18s",
+          }}
+          onMouseEnter={(e) => {
+            const btn = e.target as HTMLElement;
+            btn.style.color = "#002f5f";
+            btn.style.background = "#fff";
+          }}
+          onMouseLeave={(e) => {
+            const btn = e.target as HTMLElement;
+            btn.style.color = "#fff";
+            btn.style.background = "rgb(0 28 53 / 0.2)";
+          }}
+        >
+          Skip introduction
+        </button>
+      </header>
+
+      {/* Main content */}
+      <main
+        style={{
+          display: "grid",
+          placeItems: "center",
+          padding: "1rem clamp(1rem, 4vw, 4rem)",
+        }}
+      >
+        {/* Intro phase */}
+        <div
+          ref={introRef}
+          className="intro"
+          style={{
+            gridArea: "1/1",
+            width: "min(94vw, 1180px)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            transition: "0.9s cubic-bezier(0.22, 1, 0.36, 1)",
+            opacity: 1,
+            visibility: "visible",
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 1.2rem",
+              color: "rgb(255 255 255 / 0.74)",
+              fontWeight: 700,
+              letterSpacing: "0.24em",
+              textTransform: "uppercase",
+              fontSize: "clamp(0.9rem, 1.2vw, 1rem)",
+            }}
+          >
+            Welcome to
+          </p>
+
+          <div
+            ref={stageRef}
+            style={{
+              position: "relative",
+              width: "min(94vw, 1106px)",
+              height: "clamp(125px, 18vw, 205px)",
+              display: "flex",
+              alignItems: "center",
+              marginBottom: "1.2rem",
+            }}
+          >
+            <svg
+              ref={svgRef}
+              viewBox="0 0 1106 180"
+              style={{
+                width: "100%",
+                height: "auto",
+                overflow: "visible",
+              }}
+            >
+              <defs>
+                <filter id="textGlow" x="-20%" y="-50%" width="140%" height="200%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <clipPath id="writingReveal">
+                  <rect ref={revealRectRef} x="0" y="0" width="0" height="180" />
+                </clipPath>
+              </defs>
+              
+              {/* Shadow text */}
+              <text
+                x="553"
+                y="108"
+                textAnchor="middle"
+                style={{
+                  fontFamily: "'Segoe Script', 'Bradley Hand', cursive",
+                  fontSize: "62px",
+                  fontWeight: 600,
+                  letterSpacing: "1px",
+                  fill: "rgb(255 255 255 / 0.12)",
+                }}
+              >
+                {WORDMARK_TEXT}
+              </text>
+
+              {/* Ink text with reveal animation */}
+              <text
+                x="553"
+                y="108"
+                textAnchor="middle"
+                clipPath="url(#writingReveal)"
+                filter="url(#textGlow)"
+                style={{
+                  fontFamily: "'Segoe Script', 'Bradley Hand', cursive",
+                  fontSize: "62px",
+                  fontWeight: 600,
+                  letterSpacing: "1px",
+                  fill: "#fff",
+                }}
+              >
+                {WORDMARK_TEXT}
+              </text>
+
+              {/* Guide path for ladybird */}
+              <path ref={inkPathRef} d={INK_PATH} style={{ fill: "none", stroke: "transparent" }} />
+            </svg>
+
+            {/* Ladybird */}
+            <div
+              ref={bugRef}
+              style={{
+                position: "absolute",
+                width: "clamp(2.7rem, 5.5vw, 4.8rem)",
+                height: "clamp(2.7rem, 5.5vw, 4.8rem)",
+                opacity: 0,
+                filter: "drop-shadow(0 6px 5px rgb(0 20 40 / 0.36))",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "inherit",
+              }}
+            >
+              🐞
+            </div>
+          </div>
+
+          <p
+            style={{
+              margin: "1.2rem 0 0",
+              color: "rgb(255 255 255 / 0.78)",
+              fontSize: "clamp(0.9rem, 1.8vw, 1.2rem)",
+              letterSpacing: "0.035em",
+              opacity: 0,
+              animation: "reveal 0.7s ease 5s forwards",
+            }}
+          >
+            Creating practical digital solutions together
+          </p>
+        </div>
+
+        {/* Logo phase */}
+        <div
+          ref={logoRef}
+          className="identity"
+          style={{
+            gridArea: "1/1",
+            textAlign: "center",
+            opacity: 0,
+            visibility: "hidden",
+            transform: "translateY(2rem) scale(0.92)",
+            transition: "0.9s cubic-bezier(0.22, 1, 0.36, 1)",
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 1.2rem",
+              color: "rgb(255 255 255 / 0.74)",
+              fontWeight: 700,
+              letterSpacing: "0.24em",
+              textTransform: "uppercase",
+              fontSize: "clamp(0.9rem, 1.2vw, 1rem)",
+            }}
+          >
+            Digital Opportunities Team
+          </p>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              lineHeight: 0.85,
+              filter: "drop-shadow(0 12px 28px rgb(0 28 53 / 0.25))",
+              marginBottom: "1.2rem",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "clamp(6.5rem, 18vw, 13rem)",
+                fontWeight: 800,
+                letterSpacing: "-0.08em",
+              }}
+            >
+              D
+            </span>
+
+            <div
+              style={{
+                position: "relative",
+                width: "clamp(5.8rem, 15vw, 11rem)",
+                height: "clamp(5.8rem, 15vw, 11rem)",
+                margin: "0 clamp(0.4rem, 1.4vw, 1rem)",
+                border: "clamp(0.6rem, 1.7vw, 1.2rem) solid rgb(255 255 255 / 0.95)",
+                borderRadius: "50%",
+                boxShadow: "0 0 38px rgb(65 199 237 / 0.25)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              {/* Orbit ring */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: "-0.65rem",
+                  border: "2px dashed rgb(127 228 244 / 0.4)",
+                  borderRadius: "50%",
+                  animation: "spin 14s linear infinite",
+                }}
+              />
+
+              {/* Logo bug */}
+              <div
+                ref={logoBugRef}
+                style={{
+                  fontSize: "clamp(2.7rem, 6vw, 4.8rem)",
+                  animation: "logoBug 2.5s ease-in-out infinite",
+                }}
+              >
+                🐞
+              </div>
+            </div>
+
+            <span
+              style={{
+                fontSize: "clamp(6.5rem, 18vw, 13rem)",
+                fontWeight: 800,
+                letterSpacing: "-0.08em",
+              }}
+            >
+              T
+            </span>
+          </div>
+
+          <p
+            style={{
+              margin: "1.2rem 0 0",
+              color: "rgb(255 255 255 / 0.86)",
+              fontSize: "clamp(1rem, 2vw, 1.35rem)",
+              letterSpacing: "0.14em",
+            }}
+          >
+            Discover. Design. Deliver.
+          </p>
+
+          <button
+            onClick={handleComplete}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.7rem",
+              maxWidth: "min(92vw, 42rem)",
+              marginTop: "1.8rem",
+              padding: "0.95rem 1.6rem",
+              textAlign: "center",
+              lineHeight: 1.4,
+              whiteSpace: "normal",
+              border: "1px solid #fff",
+              borderRadius: "8px",
+              color: "#002f5f",
+              background: "#fff",
+              fontWeight: 700,
+              cursor: "pointer",
+              boxShadow: "0 12px 28px rgb(0 28 53 / 0.2)",
+              transition: "0.2s",
+              fontSize: "inherit",
+            }}
+            onMouseEnter={(e) => {
+              const btn = e.target as HTMLElement;
+              btn.style.color = "#fff";
+              btn.style.background = "#002f5f";
+              btn.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              const btn = e.target as HTMLElement;
+              btn.style.color = "#002f5f";
+              btn.style.background = "#fff";
+              btn.style.transform = "none";
+            }}
+          >
+            Welcome to your Oncology Health and Treatment Assessment, click here to begin{" "}
+            <span aria-hidden="true">→</span>
+          </button>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: "0.7rem",
+          padding: "1rem 1.5rem 1.6rem",
+          color: "rgb(255 255 255 / 0.58)",
+          fontSize: "clamp(0.65rem, 1.1vw, 0.82rem)",
+          zIndex: 5,
+        }}
+      >
+        <span>Digital innovation at HDFT</span>
+        <div
+          style={{
+            width: "0.3rem",
+            height: "0.3rem",
+            borderRadius: "50%",
+            background: "#41c7ed",
+            boxShadow: "0 0 8px #41c7ed",
           }}
         />
-      </div>
+        <span>Powered by people and ideas</span>
+      </footer>
 
       <style>{`
-        @keyframes writeText {
-          from {
-            stroke-dashoffset: 2000;
+        .landing {
+          --blue: #005eb8;
+          --deep: #002f5f;
+          --dark: #001c35;
+          --cyan: #41c7ed;
+          --aqua: #7fe4f4;
+        }
+
+        .landing.leaving {
+          opacity: 0;
+          visibility: hidden;
+          transform: scale(1.025);
+        }
+
+        .landing.logo .intro {
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-2rem) scale(0.96);
+        }
+
+        .landing.logo .identity {
+          opacity: 1 !important;
+          visibility: visible !important;
+          transform: none !important;
+        }
+
+        @keyframes reveal {
+          to { opacity: 1; }
+        }
+
+        @keyframes float {
+          50% { transform: translate(1.5rem, -1rem) scale(1.08); }
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @keyframes logoBug {
+          50% { transform: translateY(-0.55rem) rotate(-8deg); }
+        }
+
+        @media (max-width: 600px) {
+          header {
+            align-items: flex-start;
           }
-          to {
-            stroke-dashoffset: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 1ms !important;
+            animation-delay: 0ms !important;
+            transition-duration: 1ms !important;
           }
         }
       `}</style>

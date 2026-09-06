@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
 import AssessmentComplete from "./components/AssessmentComplete";
@@ -69,6 +69,10 @@ const [questionnaireStates, setQuestionnaireStates] =
   ).get("token");
 
   const questionnaireRefs = useRef<Record<string, any>>({});
+
+  const handleLandingPageComplete = useCallback(() => {
+    setShowLandingPage(false);
+  }, []);
 
   useEffect(() => {
     async function loadAssessment() {
@@ -328,7 +332,7 @@ const [questionnaireStates, setQuestionnaireStates] =
     return (
       <LandingPage
         email={userEmail}
-        onComplete={() => setShowLandingPage(false)}
+        onComplete={handleLandingPageComplete}
       />
     );
   }
