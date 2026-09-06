@@ -8,13 +8,15 @@ type LandingPageProps = {
 
 export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const svgPathRef = useRef<SVGPathElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const svg = svgRef.current;
     const svgPath = svgPathRef.current;
-    if (!canvas || !svgPath) return;
+    if (!canvas || !svg || !svgPath) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -31,8 +33,37 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
     const text = "Digital Opportunities Team @ HDFT";
     const dotText = "DOT";
     
-    // Get path length for progress calculation
+    // Get SVG path length
     const pathLength = svgPath.getTotalLength();
+    
+    // Create a transform function to convert SVG coordinates to canvas coordinates
+    const getSVGPathPoint = (progress: number) => {
+      const distance = pathLength * progress;
+      const point = svgPath.getPointAtLength(distance);
+      
+      // Get next point to calculate angle
+      const nextDistance = Math.min(pathLength, distance + 5);
+      const nextPoint = svgPath.getPointAtLength(nextDistance);
+      
+      // Calculate angle from current point to next point
+      const angle = Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x);
+      
+      // The SVG viewBox is 0 0 1200 400, we need to map it to canvas coordinates
+      const svgWidth = 1200;
+      
+      // We need to know where text is positioned to map coordinates correctly
+      const middleThirdCenter = canvas.height / 2;
+      const textY = middleThirdCenter - 60;
+      
+      // Map SVG coordinates to canvas coordinates
+      // Horizontally: center and scale to match canvas width
+      const canvasX = (point.x / svgWidth) * canvas.width;
+      // Vertically: map to middle third, scaled appropriately
+      const yOffset = (point.y - 200) / 200; // Normalize -200 to 200
+      const canvasY = textY + yOffset * 80; // Scale by a factor
+      
+      return { x: canvasX, y: canvasY, angle };
+    };
 
     const drawLadybird = (
       x: number,
@@ -188,20 +219,26 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         const displayText = text.substring(0, visibleCharCount);
         
         // Draw the visible text
+        ctx!.font = `bold italic ${mainFontSize}px Brush Script MT, cursive`;
+        ctx!.fillStyle = "#ffffff";
+        ctx!.textAlign = "center";
+        ctx!.textBaseline = "top";
         ctx!.fillText(displayText, centerX, textY);
         
-        // Get ladybird position from SVG path
-        const pathProgress = walkProgress * pathLength;
-        const point = svgPath!.getPointAtLength(pathProgress);
+        // Get ladybird position and angle from SVG path
+        const pathData = getSVGPathPoint(walkProgress);
         
-        // Adjust position relative to canvas
-        const ladybirdX = point.x;
-        const ladybirdY = point.y + textY - 50;
-        const ladybirdAngle = Math.sin(walkProgress * Math.PI * 4) * 0.15;
+        // Combine path angle with bobbing animation
+        const bobbing = Math.sin(walkProgress * Math.PI * 4) * 0.15;
+        const ladybirdAngle = pathData.angle + bobbing;
         
-        drawLadybird(ladybirdX, ladybirdY, 35, ladybirdAngle);
+        drawLadybird(pathData.x, pathData.y, 35, ladybirdAngle);
       } else {
-        // Circling phase - draw complete text and DOT below it
+        // Circling phase
+        ctx!.font = `bold italic ${mainFontSize}px Brush Script MT, cursive`;
+        ctx!.fillStyle = "#ffffff";
+        ctx!.textAlign = "center";
+        ctx!.textBaseline = "top";
         ctx!.fillText(text, centerX, textY);
         
         // Draw DOT below the main text, centered
@@ -212,9 +249,9 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         // Ladybird circles around the O in DOT and settles in the middle
         const circleProgress = (progress - 0.75) / 0.25;
         
-        // Position the O center (approximately where DOT's O would be)
+        // Position the O center
         const oWidth = ctx!.measureText("D").width;
-        const oCenterX = centerX + oWidth * 0.15; // Adjusted for O position in DOT
+        const oCenterX = centerX + oWidth * 0.15;
         const oCenterY = dotY + mainFontSize / 2;
         const radius = mainFontSize * 0.6;
 
@@ -271,8 +308,9 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         background: "#003f87",
       }}
     >
-      {/* Hidden SVG for path animation */}
+      {/* Hidden SVG for path animation - maps to text baseline */}
       <svg
+        ref={svgRef}
         style={{
           position: "absolute",
           width: "100%",
@@ -280,11 +318,12 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
           pointerEvents: "none",
           visibility: "hidden",
         }}
-        viewBox={`0 0 ${window.innerWidth} ${window.innerHeight}`}
+        viewBox="0 0 1200 400"
       >
+        {/* Main walking path - wavy horizontal line at center */}
         <path
           ref={svgPathRef}
-          d={`M 100 ${window.innerHeight / 2} Q ${window.innerWidth / 2} ${window.innerHeight / 2 - 80} ${window.innerWidth - 100} ${window.innerHeight / 2}`}
+          d="M 100 200 Q 300 150 450 200 T 800 200 Q 950 150 1100 200"
           fill="none"
           stroke="none"
         />
