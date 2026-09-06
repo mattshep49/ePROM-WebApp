@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import "../styles/LandingPage.css";
 
 type LandingPageProps = {
   email: string;
@@ -203,13 +202,55 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
   }, [onComplete]);
 
   return (
-    <div className="landing-page-container">
-      <canvas ref={canvasRef} className="landing-canvas" />
+    <div
+      style={{
+        position: "relative",
+        width: "100%",
+        height: "100vh",
+        overflow: "hidden",
+        background: "#003f87",
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "block",
+        }}
+      />
 
-      <div className="landing-title-box">
-        <h1>Welcome {email}</h1>
-        <p>to your Oncology Health and Treatment Questionnaire</p>
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+          textAlign: "center",
+          color: "white",
+          zIndex: 10,
+          opacity: 0,
+          animation: "fadeInTitle 1s ease-out 0.5s forwards",
+        }}
+      >
+        <h1 style={{ margin: 0, fontSize: "32px", fontWeight: 700, lineHeight: 1.3, marginBottom: "10px" }}>
+          Welcome {email}
+        </h1>
+        <p style={{ margin: 0, fontSize: "18px", fontWeight: 400, lineHeight: 1.5, opacity: 0.95 }}>
+          to your Oncology Health and Treatment Questionnaire
+        </p>
       </div>
+
+      <style>{`
+        @keyframes fadeInTitle {
+          to {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 }
