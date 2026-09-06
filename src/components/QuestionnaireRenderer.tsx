@@ -29,10 +29,11 @@ type Props = {
     state: QuestionnaireState
   ) => void;
   onCheckEmptyText?: (emptyQuestions: Question[]) => void;
+  onSubmitReady?: (state: QuestionnaireState) => void;
 };
 
 export default forwardRef(function QuestionnaireRenderer(
-  { questionnaire, onAnswersChange, onCheckEmptyText }: Props,
+  { questionnaire, onAnswersChange, onCheckEmptyText, onSubmitReady }: Props,
   ref
 ) {
   const [answers, setAnswers] =
@@ -49,6 +50,9 @@ export default forwardRef(function QuestionnaireRenderer(
 
   const [emptyTextQuestions, setEmptyTextQuestions] =
     useState<Question[]>([]);
+
+  const [isPendingSubmit, setIsPendingSubmit] =
+    useState(false);
 
   /*
    * Keep the latest callback without causing the answer effect
@@ -67,6 +71,22 @@ export default forwardRef(function QuestionnaireRenderer(
         return false;
       }
       return true;
+    },
+    proceedWithSubmission: () => {
+      return {
+        answers,
+        visibleRequiredQuestionCodes:
+          visibleQuestions
+            .filter(
+              (question) =>
+                question.mandatory
+            )
+            .map(
+              (question) =>
+                question.questionCode
+            ),
+        clinicalAlerts: alerts,
+      };
     },
   }));
 
@@ -257,6 +277,37 @@ export default forwardRef(function QuestionnaireRenderer(
     visibleQuestions,
   ]);
 
+  /*
+   * Handle submission after empty text confirmation
+   */
+  useEffect(() => {
+    if (!isPendingSubmit || !isLoaded) {
+      return;
+    }
+
+    // Check if all previously empty questions now have "empty-confirmed"
+    const allConfirmed = emptyTextQuestions.every(
+      (question) =>
+        answers[question.questionCode] === "empty-confirmed"
+    );
+
+    if (allConfirmed && onSubmitReady) {
+      // Notify parent that submission is ready
+      const visibleRequiredQuestionCodes =
+        visibleQuestions
+          .filter((question) => question.mandatory)
+          .map((question) => question.questionCode);
+
+      onSubmitReady({
+        answers,
+        visibleRequiredQuestionCodes,
+        clinicalAlerts: alerts,
+      });
+
+      setIsPendingSubmit(false);
+    }
+  }, [isPendingSubmit, isLoaded, answers, emptyTextQuestions, visibleQuestions, alerts, onSubmitReady]);
+
   const updateAnswer = (
     questionCode: string,
     value: AnswerValue
@@ -296,6 +347,7 @@ export default forwardRef(function QuestionnaireRenderer(
     });
     setAnswers(updatedAnswers);
     setShowEmptyTextConfirmation(false);
+    setIsPendingSubmit(true);
     
     // Call parent callback if provided
     if (onCheckEmptyText) {
@@ -636,10 +688,9 @@ export default forwardRef(function QuestionnaireRenderer(
                         paddingTop: "8px",
                         borderTop: "1px solid #fca5a5",
                         fontSize: "13px",
-                        fontWeight: 600,
                       }}
                     >
-                      If you are still experiencing the symptoms, please contact the Oncology 24-Hour Hotline on <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline" }}>01423 555444</a>
+                      If you are still experiencing this symptom at this level then contact the 24-Hour Oncology Hotline on <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline", fontWeight: 600 }}>01423 555444</a> as soon as possible.
                     </div>
                   </div>
                 )}

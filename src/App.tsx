@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
 import AssessmentComplete from "./components/AssessmentComplete";
@@ -62,6 +62,8 @@ const [questionnaireStates, setQuestionnaireStates] =
   const token = new URLSearchParams(
     window.location.search
   ).get("token");
+
+  const questionnaireRefs = useRef<Record<string, any>>({});
 
   useEffect(() => {
     async function loadAssessment() {
@@ -152,6 +154,35 @@ const [questionnaireStates, setQuestionnaireStates] =
       return;
     }
 
+    // Check for empty text fields in all questionnaires
+    const allQuestionnaireRefs = Object.values(questionnaireRefs.current);
+    let hasEmptyTextToConfirm = false;
+
+    for (const ref of allQuestionnaireRefs) {
+      if (ref) {
+        const isValid = ref.validateEmptyText();
+        if (isValid === false) {
+          // Dialog is showing, wait for user confirmation
+          hasEmptyTextToConfirm = true;
+          break;
+        }
+      }
+    }
+
+    if (hasEmptyTextToConfirm) {
+      // Dialog is displaying, stop here and wait for onSubmitReady
+      return;
+    }
+
+    // Proceed with validation and submission
+    proceedWithSubmission();
+  }
+
+  function proceedWithSubmission() {
+    if (!assessment || !token) {
+      return;
+    }
+
     const combinedAnswers = Object.assign(
   {},
   ...Object.values(questionnaireStates).map(
@@ -159,21 +190,21 @@ const [questionnaireStates, setQuestionnaireStates] =
   )
 ) as Answers;
 
-const visibleRequiredQuestionCodes =
-  Object.values(questionnaireStates).flatMap(
-    (state) => state.visibleRequiredQuestionCodes
-  );
+    const visibleRequiredQuestionCodes =
+      Object.values(questionnaireStates).flatMap(
+        (state) => state.visibleRequiredQuestionCodes
+      );
 
-const missingQuestionCodes =
-  visibleRequiredQuestionCodes.filter(
-    (questionCode) =>
-      combinedAnswers[questionCode] === undefined ||
-      combinedAnswers[questionCode] === ""
-  );
+    const missingQuestionCodes =
+      visibleRequiredQuestionCodes.filter(
+        (questionCode) =>
+          combinedAnswers[questionCode] === undefined ||
+          combinedAnswers[questionCode] === ""
+      );
 
     if (missingQuestionCodes.length > 0) {
       const firstMissingQuestion =
-        missingQuestionCodes[0]; 
+        missingQuestionCodes[0];
 
       document
         .getElementById(firstMissingQuestion)
@@ -183,8 +214,8 @@ const missingQuestionCodes =
         });
 
       setSubmissionError(
-  `Please complete ${missingQuestionCodes.length} required question(s).`
-);
+        `Please complete ${missingQuestionCodes.length} required question(s).`
+      );
 
       return;
     }
@@ -203,6 +234,12 @@ const missingQuestionCodes =
       ),
     };
 
+    submitPayload(payload);
+  }
+
+  async function submitPayload(
+    payload: SubmissionPayload
+  ) {
     try {
       setSubmitting(true);
       setSubmissionError(null);
@@ -220,6 +257,23 @@ const missingQuestionCodes =
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function handleSubmitReady(
+    questionnaireCode: string,
+    state: QuestionnaireState
+  ) {
+    // Update the state for this questionnaire with confirmed empty fields
+    setQuestionnaireStates((current) => ({
+      ...current,
+      [questionnaireCode]: state,
+    }));
+
+    // After updating state, proceed with submission
+    // Use setTimeout to ensure state is updated before proceeding
+    setTimeout(() => {
+      proceedWithSubmission();
+    }, 0);
   }
 
   if (loading) {
@@ -291,8 +345,21 @@ const missingQuestionCodes =
         {questionnaires.map((questionnaire) => (
           <QuestionnaireRenderer
             key={questionnaire.questionnaireCode}
+            ref={(el) => {
+              if (el) {
+                questionnaireRefs.current[
+                  questionnaire.questionnaireCode
+                ] = el;
+              }
+            }}
             questionnaire={questionnaire}
             onAnswersChange={handleAnswersChange}
+            onSubmitReady={(state) =>
+              handleSubmitReady(
+                questionnaire.questionnaireCode,
+                state
+              )
+            }
           />
         ))}
 
