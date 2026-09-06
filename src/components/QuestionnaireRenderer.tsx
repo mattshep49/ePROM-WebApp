@@ -346,20 +346,22 @@ export default function QuestionnaireRenderer({
           <section
             style={{
               marginBottom: "28px",
-              padding: "16px 20px",
+              padding: "12px 16px",
               background: "#fee2e2",
               border: "2px solid #dc2626",
               borderRadius: "10px",
               position: "sticky",
               top: 0,
               zIndex: 99,
+              maxHeight: "35vh",
+              overflowY: "auto",
             }}
           >
           <h2
             style={{
-              margin: "0 0 12px",
+              margin: "0 0 8px",
               color: "#991b1b",
-              fontSize: "18px",
+              fontSize: "16px",
               fontWeight: 700,
             }}
           >
@@ -367,9 +369,10 @@ export default function QuestionnaireRenderer({
           </h2>
           <ul
             style={{
-              margin: 0,
+              margin: "0 0 8px",
               paddingLeft: "20px",
               color: "#7f1d1d",
+              fontSize: "13px",
             }}
           >
             {alerts.map((alert, index) => {
@@ -380,9 +383,9 @@ export default function QuestionnaireRenderer({
               <li
                 key={index}
                 style={{
-                  marginBottom: "12px",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
+                  marginBottom: "8px",
+                  fontSize: "13px",
+                  lineHeight: "1.4",
                 }}
               >
                 <strong style={{ color: "#991b1b" }}>
@@ -394,6 +397,18 @@ export default function QuestionnaireRenderer({
               );
             })}
           </ul>
+          <div
+            style={{
+              marginTop: "8px",
+              paddingTop: "8px",
+              borderTop: "1px solid #fca5a5",
+              color: "#991b1b",
+              fontSize: "13px",
+              fontWeight: 600,
+            }}
+          >
+            📞 Oncology Hotline: <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline" }}>01423 555444</a>
+          </div>
           </section>
         )}
 
