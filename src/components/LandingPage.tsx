@@ -39,55 +39,114 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       ctx!.translate(x, y);
       ctx!.rotate(angle);
 
-      // Body (red)
+      // Wings/elytra (red body)
       ctx!.fillStyle = "#d5281b";
       ctx!.beginPath();
-      ctx!.ellipse(0, 0, size * 0.8, size * 1.2, 0, 0, Math.PI * 2);
+      ctx!.ellipse(0, 0, size * 0.85, size * 1.3, 0, 0, Math.PI * 2);
+      ctx!.fill();
+
+      // Wing divider (center line)
+      ctx!.strokeStyle = "#000000";
+      ctx!.lineWidth = size * 0.08;
+      ctx!.beginPath();
+      ctx!.moveTo(0, -size * 1.3);
+      ctx!.lineTo(0, size * 1.3);
+      ctx!.stroke();
+
+      // Black spots on body - 6 spots (3 per side)
+      ctx!.fillStyle = "#000000";
+      // Left side spots
+      ctx!.beginPath();
+      ctx!.arc(-size * 0.35, -size * 0.5, size * 0.18, 0, Math.PI * 2);
+      ctx!.fill();
+      ctx!.beginPath();
+      ctx!.arc(-size * 0.35, 0, size * 0.18, 0, Math.PI * 2);
+      ctx!.fill();
+      ctx!.beginPath();
+      ctx!.arc(-size * 0.35, size * 0.5, size * 0.18, 0, Math.PI * 2);
+      ctx!.fill();
+      // Right side spots
+      ctx!.beginPath();
+      ctx!.arc(size * 0.35, -size * 0.5, size * 0.18, 0, Math.PI * 2);
+      ctx!.fill();
+      ctx!.beginPath();
+      ctx!.arc(size * 0.35, 0, size * 0.18, 0, Math.PI * 2);
+      ctx!.fill();
+      ctx!.beginPath();
+      ctx!.arc(size * 0.35, size * 0.5, size * 0.18, 0, Math.PI * 2);
       ctx!.fill();
 
       // Head (black)
       ctx!.fillStyle = "#000000";
       ctx!.beginPath();
-      ctx!.arc(-size * 0.4, -size * 0.8, size * 0.35, 0, Math.PI * 2);
+      ctx!.arc(0, -size * 1.05, size * 0.4, 0, Math.PI * 2);
       ctx!.fill();
 
       // Eyes (white dots)
       ctx!.fillStyle = "#ffffff";
       ctx!.beginPath();
-      ctx!.arc(-size * 0.55, -size * 0.95, size * 0.12, 0, Math.PI * 2);
+      ctx!.arc(-size * 0.15, -size * 1.15, size * 0.1, 0, Math.PI * 2);
       ctx!.fill();
       ctx!.beginPath();
-      ctx!.arc(-size * 0.25, -size * 0.95, size * 0.12, 0, Math.PI * 2);
+      ctx!.arc(size * 0.15, -size * 1.15, size * 0.1, 0, Math.PI * 2);
       ctx!.fill();
 
-      // Black spots on body (left side)
-      ctx!.fillStyle = "#000000";
-      ctx!.beginPath();
-      ctx!.arc(-size * 0.35, -size * 0.3, size * 0.15, 0, Math.PI * 2);
-      ctx!.fill();
-      ctx!.beginPath();
-      ctx!.arc(-size * 0.35, size * 0.3, size * 0.15, 0, Math.PI * 2);
-      ctx!.fill();
-
-      // Black spots on body (right side)
-      ctx!.beginPath();
-      ctx!.arc(size * 0.35, -size * 0.3, size * 0.15, 0, Math.PI * 2);
-      ctx!.fill();
-      ctx!.beginPath();
-      ctx!.arc(size * 0.35, size * 0.3, size * 0.15, 0, Math.PI * 2);
-      ctx!.fill();
-
-      // Antennae (black)
+      // Mouth (black line)
       ctx!.strokeStyle = "#000000";
-      ctx!.lineWidth = size * 0.15;
-      ctx!.lineCap = "round";
+      ctx!.lineWidth = size * 0.08;
       ctx!.beginPath();
-      ctx!.moveTo(-size * 0.35, -size);
-      ctx!.quadraticCurveTo(-size * 0.6, -size * 1.3, -size * 0.5, -size * 1.5);
+      ctx!.arc(0, -size * 1.05, size * 0.2, 0.2, Math.PI - 0.2);
       ctx!.stroke();
+
+      // Antennae (black, more detailed)
+      ctx!.strokeStyle = "#000000";
+      ctx!.lineWidth = size * 0.12;
+      ctx!.lineCap = "round";
+      ctx!.lineJoin = "round";
+      // Left antenna
       ctx!.beginPath();
-      ctx!.moveTo(-size * 0.15, -size);
-      ctx!.quadraticCurveTo(size * 0.1, -size * 1.3, size * 0, -size * 1.5);
+      ctx!.moveTo(-size * 0.15, -size * 1.4);
+      ctx!.quadraticCurveTo(-size * 0.5, -size * 1.7, -size * 0.6, -size * 1.9);
+      ctx!.stroke();
+      // Right antenna
+      ctx!.beginPath();
+      ctx!.moveTo(size * 0.15, -size * 1.4);
+      ctx!.quadraticCurveTo(size * 0.5, -size * 1.7, size * 0.6, -size * 1.9);
+      ctx!.stroke();
+
+      // Legs (6 legs - black)
+      ctx!.strokeStyle = "#000000";
+      ctx!.lineWidth = size * 0.1;
+      ctx!.lineCap = "round";
+      // Front left
+      ctx!.beginPath();
+      ctx!.moveTo(-size * 0.6, -size * 0.6);
+      ctx!.quadraticCurveTo(-size * 0.95, -size * 0.3, -size * 0.9, size * 0.2);
+      ctx!.stroke();
+      // Front right
+      ctx!.beginPath();
+      ctx!.moveTo(size * 0.6, -size * 0.6);
+      ctx!.quadraticCurveTo(size * 0.95, -size * 0.3, size * 0.9, size * 0.2);
+      ctx!.stroke();
+      // Middle left
+      ctx!.beginPath();
+      ctx!.moveTo(-size * 0.7, 0);
+      ctx!.quadraticCurveTo(-size * 1.1, 0, -size * 1.0, size * 0.4);
+      ctx!.stroke();
+      // Middle right
+      ctx!.beginPath();
+      ctx!.moveTo(size * 0.7, 0);
+      ctx!.quadraticCurveTo(size * 1.1, 0, size * 1.0, size * 0.4);
+      ctx!.stroke();
+      // Back left
+      ctx!.beginPath();
+      ctx!.moveTo(-size * 0.6, size * 0.6);
+      ctx!.quadraticCurveTo(-size * 0.95, size * 0.8, -size * 0.85, size * 1.2);
+      ctx!.stroke();
+      // Back right
+      ctx!.beginPath();
+      ctx!.moveTo(size * 0.6, size * 0.6);
+      ctx!.quadraticCurveTo(size * 0.95, size * 0.8, size * 0.85, size * 1.2);
       ctx!.stroke();
 
       ctx!.restore();
@@ -102,71 +161,84 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       ctx!.fillRect(0, 0, canvas.width, canvas.height);
 
       const centerX = canvas.width / 2;
-      const centerY = canvas.height / 3;
-      const textX = centerX - 350;
-      const textY = centerY + 100;
-
-      // Set up font - using system cursive font
-      ctx!.font = 'bold italic 48px Brush Script MT, cursive';
+      const canvasHeight = canvas.height;
+      
+      // Position text in middle third of canvas
+      const middleThirdCenter = canvasHeight / 2;
+      const textY = middleThirdCenter - 60;
+      
+      // Set up font - much larger
+      const mainFontSize = 96;
+      ctx!.font = `bold italic ${mainFontSize}px Brush Script MT, cursive`;
       ctx!.fillStyle = "#ffffff";
-      ctx!.textAlign = "left";
+      ctx!.textAlign = "center";
       ctx!.textBaseline = "top";
 
-      if (progress < 0.7) {
-        // Walking phase - ladybird walks along the text, leaving letters behind
-        const walkProgress = progress / 0.7;
+      if (progress < 0.75) {
+        // Walking phase - ladybird walks along the text
+        const walkProgress = progress / 0.75;
         
         // Calculate how many characters should be visible
         const visibleCharCount = Math.floor(walkProgress * text.length);
         const displayText = text.substring(0, visibleCharCount);
         
+        // Measure full text to center it
+        const fullTextMetrics = ctx!.measureText(text);
+        const textStartX = centerX - fullTextMetrics.width / 2;
+        
         // Draw the visible text
-        ctx!.fillText(displayText, textX, textY);
+        ctx!.fillText(displayText, centerX, textY);
         
         // Calculate ladybird position based on text width
-        const textMetrics = ctx!.measureText(displayText);
-        let ladybirdX = textX + textMetrics.width + 20;
+        const displayMetrics = ctx!.measureText(displayText);
+        let ladybirdX = textStartX + displayMetrics.width + 30;
         
         // Add smoothness between characters
         const fractionalChar = (walkProgress * text.length) % 1;
         if (visibleCharCount < text.length) {
           const nextCharText = text.substring(0, visibleCharCount + 1);
           const nextMetrics = ctx!.measureText(nextCharText);
-          const charWidth = nextMetrics.width - textMetrics.width;
+          const charWidth = nextMetrics.width - displayMetrics.width;
           ladybirdX += fractionalChar * charWidth;
         }
         
-        const ladybirdY = textY - 40;
-        const ladybirdAngle = Math.sin(walkProgress * Math.PI * 4) * 0.1; // Bobbing animation
+        const bobAmount = Math.sin(walkProgress * Math.PI * 8) * 15; // More pronounced bobbing
+        const ladybirdY = textY - 60 + bobAmount;
+        const ladybirdAngle = Math.sin(walkProgress * Math.PI * 4) * 0.15;
         
-        drawLadybird(ladybirdX, ladybirdY, 25, ladybirdAngle);
+        drawLadybird(ladybirdX, ladybirdY, 35, ladybirdAngle);
       } else {
-        // Circling phase - draw complete text and circle for DOT
-        ctx!.fillText(text, textX, textY);
+        // Circling phase - draw complete text and DOT below it
+        ctx!.fillText(text, centerX, textY);
         
-        const circleProgress = (progress - 0.7) / 0.3;
-        const dotCenterX = centerX + 80;
-        const dotCenterY = centerY + 240;
-        const radius = 80;
-
-        // Circle around the position
-        const circleAngle = circleProgress * Math.PI * 2.5;
-        const ladybirdX = dotCenterX + Math.cos(circleAngle) * radius;
-        const ladybirdY = dotCenterY + Math.sin(circleAngle) * radius - 40;
-        const ladybirdSize = 25 - circleProgress * 5; // Shrink slightly
+        // Draw DOT below the main text, centered
+        const dotY = textY + mainFontSize + 50;
+        ctx!.font = `bold italic ${mainFontSize + 30}px Brush Script MT, cursive`;
+        ctx!.fillText(dotText, centerX, dotY);
         
-        drawLadybird(ladybirdX, ladybirdY, ladybirdSize, circleAngle);
-      }
+        // Ladybird circles around the O in DOT and settles in the middle
+        const circleProgress = (progress - 0.75) / 0.25;
+        
+        // Position the O center (approximately where DOT's O would be)
+        const oWidth = ctx!.measureText("D").width;
+        const oCenterX = centerX + oWidth * 0.15; // Adjusted for O position in DOT
+        const oCenterY = dotY + mainFontSize / 2;
+        const radius = mainFontSize * 0.6;
 
-      // Draw DOT text after animation
-      if (progress > 0.6) {
-        ctx!.fillStyle = "#ffffff";
-        ctx!.font = 'bold italic 56px Brush Script MT, cursive';
-        ctx!.textAlign = "center";
-        ctx!.textBaseline = "middle";
-        const dotX = centerX + 80;
-        const dotY = centerY + 240;
-        ctx!.fillText(dotText, dotX, dotY);
+        // Spiral inward as progress increases
+        const spiralRadius = radius * (1 - circleProgress * 0.8);
+        const circleAngle = circleProgress * Math.PI * 3;
+        
+        const ladybirdX = oCenterX + Math.cos(circleAngle) * spiralRadius;
+        const ladybirdY = oCenterY + Math.sin(circleAngle) * spiralRadius;
+        const ladybirdSize = 35 * (1 - circleProgress * 0.5);
+        
+        drawLadybird(ladybirdX, ladybirdY, ladybirdSize, circleAngle + Math.PI / 4);
+        
+        // Final position: sit in center of O
+        if (circleProgress > 0.9) {
+          drawLadybird(oCenterX, oCenterY, 30, 0);
+        }
       }
 
       // Continue animation if not done
@@ -221,20 +293,19 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       <div
         style={{
           position: "absolute",
-          top: "50%",
+          top: "2%",
           left: "50%",
-          transform: "translate(-50%, -50%)",
+          transform: "translateX(-50%)",
           textAlign: "center",
           color: "white",
           zIndex: 10,
-          opacity: 0,
-          animation: "fadeInTitle 1s ease-out 0.5s forwards",
+          width: "90%",
         }}
       >
-        <h1 style={{ margin: 0, fontSize: "32px", fontWeight: 700, lineHeight: 1.3, marginBottom: "10px" }}>
+        <h1 style={{ margin: 0, fontSize: "28px", fontWeight: 700, lineHeight: 1.3, marginBottom: "8px" }}>
           Welcome {email}
         </h1>
-        <p style={{ margin: 0, fontSize: "18px", fontWeight: 400, lineHeight: 1.5, opacity: 0.95 }}>
+        <p style={{ margin: 0, fontSize: "16px", fontWeight: 400, lineHeight: 1.5, opacity: 0.95 }}>
           to your Oncology Health and Treatment Questionnaire
         </p>
       </div>
@@ -242,15 +313,14 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       <div
         style={{
           position: "absolute",
-          bottom: 0,
+          bottom: "2%",
           left: 0,
           right: 0,
           width: "100%",
-          padding: "20px",
+          height: "auto",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "rgba(255, 255, 255, 0.95)",
           zIndex: 20,
         }}
       >
@@ -258,19 +328,15 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
           src={trustLogo}
           alt="Team HDFT - Harrogate and District NHS Foundation Trust"
           style={{
-            maxWidth: "100%",
+            maxWidth: "90%",
             height: "auto",
-            maxHeight: "80px",
+            maxHeight: "100px",
           }}
         />
       </div>
 
       <style>{`
-        @keyframes fadeInTitle {
-          to {
-            opacity: 1;
-          }
-        }
+        /* Animation styles here if needed */
       `}</style>
     </div>
   );
