@@ -17,18 +17,30 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Set canvas size
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    // Wait for Dancing Script font to load
+    const loadFont = async () => {
+      try {
+        await document.fonts.load('700 48px "Dancing Script"');
+      } catch (e) {
+        console.warn("Dancing Script font loading attempted");
+      }
+    };
 
-    // Animation parameters
-    const startTime = Date.now();
-    const animationDuration = 8000; // 8 seconds for animation
-    const totalDuration = 10000; // 10 seconds total
+    const startAnimation = async () => {
+      await loadFont();
 
-    // Text to animate
-    const text = "Digital Opportunities Team @ HDFT";
-    const dotText = "DOT";
+      // Set canvas size
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      // Animation parameters
+      const startTime = Date.now();
+      const animationDuration = 8000; // 8 seconds for animation
+      const totalDuration = 10000; // 10 seconds total
+
+      // Text to animate
+      const text = "Digital Opportunities Team @ HDFT";
+      const dotText = "DOT";
 
     // Ladybird shape and position
     interface LadybirdState {
@@ -116,7 +128,7 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       const textY = centerY + 100;
 
       // Set up font - Dancing Script for text
-      ctx!.font = "bold 48px 'Dancing Script', cursive";
+        ctx!.font = '700 48px "Dancing Script", cursive';
       ctx!.fillStyle = "#ffffff";
       ctx!.textAlign = "left";
       ctx!.textBaseline = "top";
@@ -171,7 +183,7 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       // Draw DOT text after animation
       if (progress > 0.6) {
         ctx!.fillStyle = "#ffffff";
-        ctx!.font = "bold 56px 'Dancing Script', cursive";
+        ctx!.font = '700 56px "Dancing Script", cursive';
         ctx!.textAlign = "center";
         ctx!.textBaseline = "middle";
         const dotX = centerX + 80;
@@ -188,22 +200,18 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       }
     };
 
-    animationRef.current = requestAnimationFrame(animate);
+      animationRef.current = requestAnimationFrame(animate);
 
-    // Handle window resize
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      // Handle window resize
+      const handleResize = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+
+      window.addEventListener("resize", handleResize);
     };
 
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-      window.removeEventListener("resize", handleResize);
-    };
+    startAnimation();
   }, [onComplete]);
 
   return (
