@@ -478,28 +478,6 @@ export default function AssessmentComplete({
           );
         })}
 
-        <h2 style={{ marginTop: "50px", marginBottom: "30px" }}>
-          Additional Comments
-        </h2>
-
-        <div
-          style={{
-            background: "#f5f7fa",
-            padding: "25px",
-            borderRadius: "12px",
-            border: "1px solid #d8dde0",
-            lineHeight: "1.6",
-            color: "#333",
-            marginBottom: "40px",
-          }}
-        >
-          {
-            responseLookup["ONTX_23"] ??
-            responseLookup["ONTX_COMMENTS"] ??
-            responseLookup["COMMENTS"] ??
-            "No comments provided"
-          }
-        </div>
         </div>
       </div>
     </div>
