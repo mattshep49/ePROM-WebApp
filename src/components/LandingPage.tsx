@@ -8,11 +8,13 @@ type LandingPageProps = {
 
 export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const svgPathRef = useRef<SVGPathElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const svgPath = svgPathRef.current;
+    if (!canvas || !svgPath) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -28,6 +30,9 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
     // Text to animate
     const text = "Digital Opportunities Team @ HDFT";
     const dotText = "DOT";
+    
+    // Get path length for progress calculation
+    const pathLength = svgPath.getTotalLength();
 
     const drawLadybird = (
       x: number,
@@ -175,35 +180,23 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       ctx!.textBaseline = "top";
 
       if (progress < 0.75) {
-        // Walking phase - ladybird walks along the text
+        // Walking phase - ladybird walks along the SVG path
         const walkProgress = progress / 0.75;
         
         // Calculate how many characters should be visible
         const visibleCharCount = Math.floor(walkProgress * text.length);
         const displayText = text.substring(0, visibleCharCount);
         
-        // Measure full text to center it
-        const fullTextMetrics = ctx!.measureText(text);
-        const textStartX = centerX - fullTextMetrics.width / 2;
-        
         // Draw the visible text
         ctx!.fillText(displayText, centerX, textY);
         
-        // Calculate ladybird position based on text width
-        const displayMetrics = ctx!.measureText(displayText);
-        let ladybirdX = textStartX + displayMetrics.width + 30;
+        // Get ladybird position from SVG path
+        const pathProgress = walkProgress * pathLength;
+        const point = svgPath!.getPointAtLength(pathProgress);
         
-        // Add smoothness between characters
-        const fractionalChar = (walkProgress * text.length) % 1;
-        if (visibleCharCount < text.length) {
-          const nextCharText = text.substring(0, visibleCharCount + 1);
-          const nextMetrics = ctx!.measureText(nextCharText);
-          const charWidth = nextMetrics.width - displayMetrics.width;
-          ladybirdX += fractionalChar * charWidth;
-        }
-        
-        const bobAmount = Math.sin(walkProgress * Math.PI * 8) * 15; // More pronounced bobbing
-        const ladybirdY = textY - 60 + bobAmount;
+        // Adjust position relative to canvas
+        const ladybirdX = point.x;
+        const ladybirdY = point.y + textY - 50;
         const ladybirdAngle = Math.sin(walkProgress * Math.PI * 4) * 0.15;
         
         drawLadybird(ladybirdX, ladybirdY, 35, ladybirdAngle);
@@ -278,6 +271,25 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         background: "#003f87",
       }}
     >
+      {/* Hidden SVG for path animation */}
+      <svg
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          visibility: "hidden",
+        }}
+        viewBox={`0 0 ${window.innerWidth} ${window.innerHeight}`}
+      >
+        <path
+          ref={svgPathRef}
+          d={`M 100 ${window.innerHeight / 2} Q ${window.innerWidth / 2} ${window.innerHeight / 2 - 80} ${window.innerWidth - 100} ${window.innerHeight / 2}`}
+          fill="none"
+          stroke="none"
+        />
+      </svg>
+
       <canvas
         ref={canvasRef}
         style={{
