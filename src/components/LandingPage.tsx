@@ -11,6 +11,18 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const animationRef = useRef<number>();
 
   useEffect(() => {
+    // Load Dancing Script font from Google Fonts
+    const link = document.createElement("link");
+    link.href = "https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap";
+    link.rel = "stylesheet";
+    document.head.appendChild(link);
+
+    return () => {
+      document.head.removeChild(link);
+    };
+  }, []);
+
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -20,9 +32,11 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
     // Wait for Dancing Script font to load
     const loadFont = async () => {
       try {
+        // Wait a bit for font to be loaded via CSS
+        await new Promise(resolve => setTimeout(resolve, 500));
         await document.fonts.load('700 48px "Dancing Script"');
       } catch (e) {
-        console.warn("Dancing Script font loading attempted");
+        console.warn("Font loading completed or skipped");
       }
     };
 
