@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import trustLogo from "../assets/trustlogo.png";
 
 type LandingPageProps = {
   email: string;
@@ -193,14 +194,32 @@ export default function LandingPage({ onComplete }: LandingPageProps) {
       >
         <div
           style={{
-            color: "rgb(255 255 255 / 0.82)",
-            fontSize: "clamp(0.72rem, 1.2vw, 0.95rem)",
-            fontWeight: 650,
-            letterSpacing: "0.045em",
-            textTransform: "uppercase",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "flex-start",
+            gap: "0.5rem",
           }}
         >
-          Harrogate and District NHS Foundation Trust
+          <div
+            style={{
+              color: "rgb(255 255 255 / 0.82)",
+              fontSize: "clamp(0.72rem, 1.2vw, 0.95rem)",
+              fontWeight: 650,
+              letterSpacing: "0.045em",
+              textTransform: "uppercase",
+            }}
+          >
+            Harrogate and District NHS Foundation Trust
+          </div>
+          <img
+            src={trustLogo}
+            alt="Harrogate and District NHS Foundation Trust Logo"
+            style={{
+              height: "clamp(2rem, 4vw, 3rem)",
+              width: "auto",
+              opacity: 0.95,
+            }}
+          />
         </div>
         <button
           onClick={handleComplete}
@@ -385,19 +404,6 @@ export default function LandingPage({ onComplete }: LandingPageProps) {
             transition: "0.9s cubic-bezier(0.22, 1, 0.36, 1)",
           }}
         >
-          <p
-            style={{
-              margin: "0 0 1.2rem",
-              color: "rgb(255 255 255 / 0.74)",
-              fontWeight: 700,
-              letterSpacing: "0.24em",
-              textTransform: "uppercase",
-              fontSize: "clamp(0.9rem, 1.2vw, 1rem)",
-            }}
-          >
-            Digital Opportunities Team
-          </p>
-
           <div
             style={{
               display: "flex",
