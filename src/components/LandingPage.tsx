@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import trustLogo from "../assets/trustlogo.png";
 
 type LandingPageProps = {
   email: string;
@@ -7,7 +8,7 @@ type LandingPageProps = {
 
 export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -25,13 +26,8 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
     const animationDuration = 8000; // 8 seconds for animation
 
     // Text to animate
-    // Ladybird shape and position
-    interface LadybirdState {
-      x: number;
-      y: number;
-      angle: number;
-      size: number;
-    }
+    const text = "Digital Opportunities Team @ HDFT";
+    const dotText = "DOT";
 
     const drawLadybird = (
       x: number,
@@ -142,9 +138,8 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         
         const ladybirdY = textY - 40;
         const ladybirdAngle = Math.sin(walkProgress * Math.PI * 4) * 0.1; // Bobbing animation
-        const ladybirdSize = 25;
         
-        drawLadybird(ladybirdX, ladybirdY, ladybirdSize, ladybirdAngle);
+        drawLadybird(ladybirdX, ladybirdY, 25, ladybirdAngle);
       } else {
         // Circling phase - draw complete text and circle for DOT
         ctx!.fillText(text, textX, textY);
@@ -160,7 +155,7 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         const ladybirdY = dotCenterY + Math.sin(circleAngle) * radius - 40;
         const ladybirdSize = 25 - circleProgress * 5; // Shrink slightly
         
-        drawLadybird(ladybirdX, ladybirdY, circleAngle);
+        drawLadybird(ladybirdX, ladybirdY, ladybirdSize, circleAngle);
       }
 
       // Draw DOT text after animation
@@ -242,6 +237,32 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         <p style={{ margin: 0, fontSize: "18px", fontWeight: 400, lineHeight: 1.5, opacity: 0.95 }}>
           to your Oncology Health and Treatment Questionnaire
         </p>
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          width: "100%",
+          padding: "20px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(255, 255, 255, 0.95)",
+          zIndex: 20,
+        }}
+      >
+        <img
+          src={trustLogo}
+          alt="Team HDFT - Harrogate and District NHS Foundation Trust"
+          style={{
+            maxWidth: "100%",
+            height: "auto",
+            maxHeight: "80px",
+          }}
+        />
       </div>
 
       <style>{`
