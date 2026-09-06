@@ -630,6 +630,17 @@ export default forwardRef(function QuestionnaireRenderer(
                       ⚠ Clinical Alert:
                     </strong>{" "}
                     {questionAlert.message}
+                    <div
+                      style={{
+                        marginTop: "8px",
+                        paddingTop: "8px",
+                        borderTop: "1px solid #fca5a5",
+                        fontSize: "13px",
+                        fontWeight: 600,
+                      }}
+                    >
+                      If you are still experiencing the symptoms, please contact the Oncology 24-Hour Hotline on <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline" }}>01423 555444</a>
+                    </div>
                   </div>
                 )}
 
