@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 
 import QuestionnaireRenderer from "./components/QuestionnaireRenderer";
 import AssessmentComplete from "./components/AssessmentComplete";
+import LandingPage from "./components/LandingPage";
 
 import { getAssessment, getQuestionnaires } from "./services/assessmentService";
 import { submitAssessment } from "./services/submissionService";
@@ -46,6 +47,7 @@ const [questionnaireStates, setQuestionnaireStates] =
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [showLandingPage, setShowLandingPage] = useState(true);
 
   const [loadError, setLoadError] =
     useState<string | null>(null);
@@ -58,6 +60,9 @@ const [questionnaireStates, setQuestionnaireStates] =
 
   const [questionnaires, setQuestionnaires] =
     useState<Questionnaire[]>([]);
+  
+  const [userEmail, setUserEmail] =
+    useState<string>("valued patient");
 
   const token = new URLSearchParams(
     window.location.search
@@ -90,6 +95,10 @@ const [questionnaireStates, setQuestionnaireStates] =
         }
 
         setAssessment(result as Assessment);
+
+        // Extract email if available
+        const email = (result as any)?.patientEmail || (result as any)?.email || "valued patient";
+        setUserEmail(email);
 
         // Fetch questionnaires from API
         try {
@@ -311,6 +320,15 @@ const [questionnaireStates, setQuestionnaireStates] =
         submittedDate={submissionPayload.submittedDate}
         responses={submissionPayload.responses}
         questionnaires={questionnaires}
+      />
+    );
+  }
+
+  if (showLandingPage) {
+    return (
+      <LandingPage
+        email={userEmail}
+        onComplete={() => setShowLandingPage(false)}
       />
     );
   }
