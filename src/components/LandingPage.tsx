@@ -9,12 +9,14 @@ type LandingPageProps = {
 export default function LandingPage({ email, onComplete }: LandingPageProps) {
   const ladybirdRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     const ladybird = ladybirdRef.current;
     const path = pathRef.current;
-    if (!ladybird || !path) return;
+    const svg = svgRef.current;
+    if (!ladybird || !path || !svg) return;
 
     const pathLength = path.getTotalLength();
     let startTime: number | null = null;
@@ -24,6 +26,14 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
       if (startTime === null) startTime = timestamp;
       let progress = (timestamp - startTime) / animationDuration;
       if (progress > 1) progress = 1;
+
+      // Get SVG bounding box to transform viewBox coordinates to screen coordinates
+      const svgRect = svg!.getBoundingClientRect();
+      const viewBox = svg!.viewBox.baseVal;
+      
+      // Calculate scale factors
+      const scaleX = svgRect.width / viewBox.width;
+      const scaleY = svgRect.height / viewBox.height;
 
       // Get point along the path
       const distance = pathLength * progress;
@@ -38,9 +48,13 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
         Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) *
         (180 / Math.PI);
 
+      // Transform viewBox coordinates to screen coordinates
+      const screenX = svgRect.left + point.x * scaleX;
+      const screenY = svgRect.top + point.y * scaleY;
+
       // Position and rotate ladybird
-      ladybird!.style.left = point.x + "px";
-      ladybird!.style.top = point.y + "px";
+      ladybird!.style.left = screenX + "px";
+      ladybird!.style.top = screenY + "px";
       ladybird!.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
 
       if (progress < 1) {
@@ -109,6 +123,7 @@ export default function LandingPage({ email, onComplete }: LandingPageProps) {
 
       {/* SVG with animated text path */}
       <svg
+        ref={svgRef}
         style={{
           position: "absolute",
           top: "50%",
