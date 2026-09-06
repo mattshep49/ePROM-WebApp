@@ -404,10 +404,10 @@ export default function QuestionnaireRenderer({
               borderTop: "1px solid #fca5a5",
               color: "#991b1b",
               fontSize: "13px",
-              fontWeight: 600,
+              lineHeight: "1.4",
             }}
           >
-            📞 Oncology Hotline: <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline" }}>01423 555444</a>
+            Please contact the Oncology 24-Hour Hotline on <a href="tel:01423555444" style={{ color: "#991b1b", textDecoration: "underline", fontWeight: 600 }}>01423 555444</a>
           </div>
           </section>
         )}
